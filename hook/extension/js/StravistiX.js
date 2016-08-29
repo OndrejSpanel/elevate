@@ -54,6 +54,8 @@ StravistiX.prototype = {
             });
         }
 
+        if (env.debugMode) console.log("Handling " + window.location.pathname);
+
         // Common
         this.handleMenu_();
         this.handleRemoteLinks_();
@@ -737,12 +739,10 @@ StravistiX.prototype = {
      */
     handleActivityRunSegmentTimeComparison_: function() {
 
-        // Test where are on an activity segments page...
-        if (!window.location.pathname.match(/^\/activities\/.*\/segments/)) {
+        // Test where are on an activity page... (this includes activities/XXX/segments)
+        if (!window.location.pathname.match(/^\/activities/)) {
             return;
         }
-
-        if (env.debugMode) console.log("Execute activities segments");
 
         if (_.isUndefined(window.pageView)) {
             return;
@@ -760,7 +760,7 @@ StravistiX.prototype = {
 
         if (env.debugMode) console.log("Execute handleActivityRunSegmentTimeComparison_()");
 
-        var activityRunSegmentTimeComparisonModifier = new ActivityRunSegmentTimeComparisonModifier(this.userSettings_, this.appResources_);
+        var activityRunSegmentTimeComparisonModifier = new ActivitySegmentTimeComparisonModifier(this.userSettings_, this.appResources_);
         activityRunSegmentTimeComparisonModifier.modify();
     },
 
