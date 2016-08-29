@@ -80,6 +80,7 @@ StravistiX.prototype = {
         this.handleRunningHeartRate_();
         this.handleRunningCadence_();
         this.handleRunningTemperature_();
+        this.handleActivityRunSegmentTimeComparison_();
 
         // All activities
         this.handleActivityQRCodeDisplay_();
@@ -729,6 +730,38 @@ StravistiX.prototype = {
 
         var activitySegmentTimeComparisonModifier = new ActivitySegmentTimeComparisonModifier(this.userSettings_, this.appResources_);
         activitySegmentTimeComparisonModifier.modify();
+    },
+
+    /**
+     *
+     */
+    handleActivityRunSegmentTimeComparison_: function() {
+
+        // Test where are on an activity segments page...
+        if (!window.location.pathname.match(/^\/activities\/.*\/segments/)) {
+            return;
+        }
+
+        if (env.debugMode) console.log("Execute activities segments");
+
+        if (_.isUndefined(window.pageView)) {
+            return;
+        }
+
+        // Only running is supported
+        if (window.pageView.activity().attributes.type != "Run") {
+            return;
+        }
+
+        // Only for own activities
+        if (this.athleteId_ != this.athleteIdAuthorOfActivity_) {
+            return;
+        }
+
+        if (env.debugMode) console.log("Execute handleActivityRunSegmentTimeComparison_()");
+
+        var activityRunSegmentTimeComparisonModifier = new ActivityRunSegmentTimeComparisonModifier(this.userSettings_, this.appResources_);
+        activityRunSegmentTimeComparisonModifier.modify();
     },
 
     /**
