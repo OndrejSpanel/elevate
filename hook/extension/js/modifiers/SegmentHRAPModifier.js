@@ -36,7 +36,6 @@ SegmentHRAPModifier.prototype = {
         function getHrapTitle(name) {
             return 'title="Estimated ' + name +' at ' + hrrPercent + '% HRR (' + targetHR + ')"';
         }
-        getHrapTitle();
 
         this.pace = resultsHeader.find('th:contains("Pace")');
         this.power = resultsHeader.find('th:contains("Power")');
