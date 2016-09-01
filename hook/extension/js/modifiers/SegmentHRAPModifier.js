@@ -74,9 +74,11 @@ SegmentHRAPModifier.prototype = {
                                 var ratio = (hr - restHR) / (targetHR - restHR);
 
                                 if (isPace) {
-                                    var paceInSec = Helper.HHMMSStoSeconds(pace.text());
+                                    var paceText = pace.text();
+                                    var paceUnits = '/' + paceText.split('/').pop();
+                                    var paceInSec = Helper.HHMMSStoSeconds(paceText);
                                     var hrapInSec = paceInSec * ratio;
-                                    content = Helper.secondsToHHMMSS(hrapInSec, true);
+                                    content = Helper.secondsToHHMMSS(hrapInSec, true) + paceUnits;
                                 } else {
                                     var speed = parseFloat(pace.text());
                                     var hraSpeed = speed / ratio;
