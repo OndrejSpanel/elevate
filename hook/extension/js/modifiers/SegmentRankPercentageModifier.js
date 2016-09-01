@@ -24,7 +24,8 @@ SegmentRankPercentageModifier.prototype = {
 
         var self = this;
 
-        this.standing = $('.leaders').find("table").find(".standing");
+        var leadersTable = $('.leaders').find("table");
+        this.standing = leadersTable.find(".standing");
 
         // Clean
         this.ranking = this.standing.children().last().text().trim().replace("\n", "").replace(/ /g, '').split('/');

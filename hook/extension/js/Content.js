@@ -204,6 +204,7 @@ var jsDependencies = [
     'js/modifiers/DefaultLeaderboardFilterModifier.js',
     'js/modifiers/MenuModifier.js',
     'js/modifiers/SegmentRankPercentageModifier.js',
+    'js/modifiers/SegmentHRAPModifier.js',
     'js/modifiers/VirtualPartnerModifier.js',
     'js/modifiers/ActivityStravaMapTypeModifier.js',
     'js/modifiers/HidePremiumModifier.js',

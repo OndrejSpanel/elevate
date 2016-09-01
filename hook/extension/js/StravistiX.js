@@ -64,6 +64,7 @@ StravistiX.prototype = {
         this.handleActivityScrolling_();
         this.handleDefaultLeaderboardFilter_();
         this.handleSegmentRankPercentage_();
+        this.handleSegmentHRAP_();
         this.handleActivityStravaMapType_();
         this.handleHidePremium_();
         this.handleHideFeed_();
@@ -417,6 +418,26 @@ StravistiX.prototype = {
 
         var segmentRankPercentage = new SegmentRankPercentageModifier();
         segmentRankPercentage.modify();
+    },
+
+    /**
+     *
+     */
+    handleSegmentHRAP_: function() {
+
+        if (!this.userSettings_.displaySegmentRankPercentage) {
+            return;
+        }
+
+        // If we are not on a segment page then return...
+        if (!window.location.pathname.match(/^\/segments\/(\d+)$/)) {
+            return;
+        }
+
+        if (env.debugMode) console.log("Execute handleSegmentHRAP_()");
+
+        var segmentHRAP = new SegmentHRAPModifier();
+        segmentHRAP.modify();
     },
 
     /**
