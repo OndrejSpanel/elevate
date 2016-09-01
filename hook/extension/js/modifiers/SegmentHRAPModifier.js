@@ -27,9 +27,12 @@ SegmentHRAPModifier.prototype = {
         var results = $('#results');
         var resultsHeader = results.find("thead");
 
+        var hrapTitle = 'title="Your pace recomputed for 85% HRR"';
+
         this.pace = resultsHeader.find('th:contains("Pace")');
 
-        this.pace.after('<th class="hrap">HRAP</th>');
+        this.pace.after('<th  '+ hrapTitle + ' class="hrap">HRAP</th>');
+
 
         results.find("tbody").find("tr").appear().on("appear", function(e, $items) {
 
@@ -41,7 +44,7 @@ SegmentHRAPModifier.prototype = {
                 if ($cells.filter('.hrap_pace').size()==0) {
                     var pace = $cells.eq(3);
 
-                    pace.after('<td class="hrap_pace">?</td>');
+                    pace.after('<td ' + hrapTitle + ' class="hrap_pace">?</td>');
                 }
 
             });
