@@ -182,7 +182,10 @@ SegmentHRAPModifier.prototype = {
 
                 var resY = mapTimeToY(hraTime);
 
+                // Cannot create SVG as HTML source - see http://stackoverflow.com/a/6149687/16673
                 var mark = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                mark.setAttribute("class", "mark");
+                //mark.className = "mark"; // does not work, I do not know why
                 mark.setAttribute("cx", xy.x);
                 mark.setAttribute("cy", resY);
                 mark.setAttribute("r", 3);
