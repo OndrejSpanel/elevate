@@ -40,22 +40,23 @@ SegmentHRAPModifier.prototype = {
 
         // TODO: get pace / speed column index
         this.pace = resultsHeader.find('th:contains("Pace")');
-        this.speed = resultsHeader.find('th:contains("Speed")');
+        this.power = resultsHeader.find('th:contains("Power")');
         this.hr = resultsHeader.find('th:contains("HR")');
 
 
         var isPace = this.pace.size() > 0;
 
-        var hrapTitle = isPace ?  getHrapTitle("pace") : getHrapTitle("speed");
-        var hrapShortTitle = isPace ? "HRAP" : "HRASpeed";
-
-        this.hr.after('<th  '+ hrapTitle + ' class="hrap">' + hrapShortTitle + '</th>');
+        var hrapTitle = isPace ?  getHrapTitle("pace") : getHrapTitle("power");
+        var hrapShortTitle = isPace ? "HRAP" : "HRAPower";
 
         var paceIndex = this.pace.index();
-        var speedIndex = this.speed.index();
+        var powerIndex = this.power.index();
         var hrIndex = this.hr.index();
 
+        var after = isPace ? this.hr : this.power;
+        var afterIndex = isPace ? hrIndex : powerIndex;
 
+        after.after('<th  ' + hrapTitle + ' class="hrap">' + hrapShortTitle + '</th>');
 
         results.find("tbody").find("tr").appear().on("appear", function(e, $items) {
 
@@ -72,7 +73,6 @@ SegmentHRAPModifier.prototype = {
                     var content = "";
                     if (self.athleteId_ == athleteId) {
                         try {
-                            var pace = $cells.eq(paceIndex);
                             var hrText = $cells.eq(hrIndex).text();
                             var hr = parseInt(hrText);
 
@@ -81,15 +81,20 @@ SegmentHRAPModifier.prototype = {
                                 var ratio = (hr - restHR) / (targetHR - restHR);
 
                                 if (isPace) {
+                                    var pace = $cells.eq(paceIndex);
                                     var paceText = pace.text();
                                     var paceUnits = '/' + paceText.split('/').pop();
                                     var paceInSec = Helper.HHMMSStoSeconds(paceText);
                                     var hrapInSec = paceInSec * ratio;
                                     content = Helper.secondsToHHMMSS(hrapInSec, true) + paceUnits;
                                 } else {
-                                    var speed = parseFloat(pace.text());
-                                    var hraSpeed = speed / ratio;
-                                    content = hraSpeed.toFixed(1);
+                                    var powerCell = $cells.eq(powerIndex);
+                                    var powerText = $.trim(powerCell.text());
+                                    var power = parseFloat(powerText);
+                                    var powerUnitsParse = /[0-9]*(.*)/g.exec(powerText);
+                                    var powerUnits = powerUnitsParse.length > 1 ?  powerUnitsParse[1] : "";
+                                    var hraPower = power / ratio;
+                                    content = hraPower.toFixed(0) + powerUnits; // consider reading units from input instead
 
                                 }
                             }
@@ -98,7 +103,7 @@ SegmentHRAPModifier.prototype = {
 
                     }
 
-                    $cells.eq(4).after('<td ' + hrapTitle + ' class="hrap_pace">' + content +'</td>');
+                    $cells.eq(afterIndex).after('<td ' + hrapTitle + ' class="hrap_pace">' + content +'</td>');
 
                 }
 
