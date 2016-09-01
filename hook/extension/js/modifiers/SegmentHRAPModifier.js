@@ -43,12 +43,19 @@ SegmentHRAPModifier.prototype = {
         this.speed = resultsHeader.find('th:contains("Speed")');
         this.hr = resultsHeader.find('th:contains("HR")');
 
-        var isPace = this.speed.size() == 0;
+
+        var isPace = this.pace.size() > 0;
 
         var hrapTitle = isPace ?  getHrapTitle("pace") : getHrapTitle("speed");
         var hrapShortTitle = isPace ? "HRAP" : "HRASpeed";
 
         this.hr.after('<th  '+ hrapTitle + ' class="hrap">' + hrapShortTitle + '</th>');
+
+        var paceIndex = this.pace.index();
+        var speedIndex = this.speed.index();
+        var hrIndex = this.hr.index();
+
+
 
         results.find("tbody").find("tr").appear().on("appear", function(e, $items) {
 
@@ -65,8 +72,8 @@ SegmentHRAPModifier.prototype = {
                     var content = "";
                     if (self.athleteId_ == athleteId) {
                         try {
-                            var pace = $cells.eq(3);
-                            var hrText = $cells.eq(4).text();
+                            var pace = $cells.eq(paceIndex);
+                            var hrText = $cells.eq(hrIndex).text();
                             var hr = parseInt(hrText);
 
                             if (hr > 0) { // parse failure is NaN, will not pass
