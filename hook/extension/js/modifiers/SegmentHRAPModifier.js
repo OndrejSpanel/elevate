@@ -1,8 +1,8 @@
 /**
  *   SegmentHRAPModifier is responsible of ...
  */
-function SegmentHRAPModifier() {
-
+function SegmentHRAPModifier(userSettings) {
+    this.userSettings_ = userSettings;
 }
 
 /**
@@ -27,7 +27,11 @@ SegmentHRAPModifier.prototype = {
         var results = $('#results');
         var resultsHeader = results.find("thead");
 
-        var hrapTitle = 'title="Your pace recomputed for 85% HRR"';
+        var hrrPercent = 90; // Lactate Threshold could be a reasonable value to show
+
+        var targetHR = Helper.heartrateFromHeartRateReserve(hrrPercent, this.userSettings_.userMaxHr, this.userSettings_.userRestHr);
+
+        var hrapTitle = 'title="Your pace recomputed for ' + hrrPercent + '% HRR (' + targetHR + ')"';
 
         this.pace = resultsHeader.find('th:contains("Pace")');
 
