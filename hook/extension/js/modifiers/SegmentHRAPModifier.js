@@ -34,7 +34,7 @@ SegmentHRAPModifier.prototype = {
         var targetHR = Helper.heartrateFromHeartRateReserve(hrrPercent, this.userSettings_.userMaxHr, this.userSettings_.userRestHr);
 
         function getHrapTitle(name) {
-            return 'title="Your ' + name +' recomputed for ' + hrrPercent + '% HRR (' + targetHR + ')"';
+            return 'title="Estimated ' + name +' at ' + hrrPercent + '% HRR (' + targetHR + ')"';
         }
         getHrapTitle();
 
