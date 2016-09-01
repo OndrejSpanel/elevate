@@ -436,7 +436,9 @@ StravistiX.prototype = {
 
         if (env.debugMode) console.log("Execute handleSegmentHRAP_()");
 
-        var segmentHRAP = new SegmentHRAPModifier(this.userSettings_, this.athleteId_);
+        var segmentId = /^\/segments\/(\d+)$/.exec(window.location.pathname)[1];
+
+        var segmentHRAP = new SegmentHRAPModifier(this.userSettings_, this.athleteId_, segmentId);
         segmentHRAP.modify();
     },
 

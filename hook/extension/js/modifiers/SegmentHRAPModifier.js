@@ -1,9 +1,10 @@
 /**
  *   SegmentHRAPModifier is responsible of ...
  */
-function SegmentHRAPModifier(userSettings, athleteId) {
+function SegmentHRAPModifier(userSettings, athleteId, segmentId) {
     this.userSettings_ = userSettings;
     this.athleteId_ = athleteId;
+    this.segmentId_ = segmentId;
 }
 
 /**
@@ -17,6 +18,44 @@ SegmentHRAPModifier.prototype = {
             this.hrap();
         }.bind(this), 750);
 
+    },
+
+    findCurrentSegmentEffortsRange: function(segmentId, page, deferred, fastest, slowest) {
+
+        if (!page) {
+            page = 1;
+        }
+        if (!deferred) {
+            deferred = $.Deferred();
+        }
+
+        var perPage = 50;
+
+        var jqxhr = $.getJSON('/segments/' + segmentId + '/leaderboard?raw=true&page=' + page + '&per_page=' + perPage + '&viewer_context=false&filter=my_results');
+
+        jqxhr.done(function(leaderboardData) {
+
+            // Make any recursive leaderboardData fetched flatten with previous one
+            leaderboardData.top_results.forEach(function(r) {
+                var rTime = r.elapsed_time_raw;
+                fastest = typeof fastest == "undefined" ? rTime : Math.min(fastest, rTime);
+                slowest = typeof slowest == "undefined" ? rTime : Math.max(slowest, rTime);
+
+            });
+
+            if (leaderboardData.top_results.length == 0) {
+                deferred.resolve(fastest, slowest);
+            } else { // Not yet resolved then seek recursive on next page
+                this.findCurrentSegmentEffortsRange(segmentId, page + 1, deferred, fastest, slowest);
+            }
+
+        }.bind(this)).fail(function(error) {
+
+            deferred.reject(error);
+
+        }.bind(this));
+
+        return deferred.promise();
     },
 
     hrap: function() {
@@ -108,6 +147,19 @@ SegmentHRAPModifier.prototype = {
             });
 
         });
+
+        var chart = $("#athlete-history-chart").find("svg");
+
+        var marks = chart.find("circle").filter(".mark");
+
+        var marksX = $.map( marks, function(c) {return c.cx.baseVal.value;});
+        var marksY = $.map( marks, function(c) {return c.cy.baseVal.value;});
+
+        // parse my results
+        var myEffortsRange = self.findCurrentSegmentEffortsRange(self.segmentId_).then(function(fastest, slowest) {
+            console.debug (fastest + "-" + slowest);
+        });
+
 
         $.force_appear();
 
