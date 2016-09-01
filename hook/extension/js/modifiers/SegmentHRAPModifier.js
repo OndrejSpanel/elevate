@@ -1,8 +1,9 @@
 /**
  *   SegmentHRAPModifier is responsible of ...
  */
-function SegmentHRAPModifier(userSettings) {
+function SegmentHRAPModifier(userSettings, athleteId) {
     this.userSettings_ = userSettings;
+    this.athleteId_ = athleteId;
 }
 
 /**
@@ -45,10 +46,20 @@ SegmentHRAPModifier.prototype = {
                 var $row = $(this),
                     $cells = $row.find("td"); // cells are: Rank, Name, Date, Pace, **HRAP**, HR, VAM, Time
 
+
                 if ($cells.filter('.hrap_pace').size()==0) {
+                    var athleteUrl = $cells.filter(".athlete").find("a").attr("href");
+                    var athleteId = athleteUrl.split('/').pop();
+
                     var pace = $cells.eq(3);
 
-                    pace.after('<td ' + hrapTitle + ' class="hrap_pace">?</td>');
+                    var content = "";
+                    if (self.athleteId_ == athleteId) {
+                        content = "???";
+                    }
+
+                    pace.after('<td ' + hrapTitle + ' class="hrap_pace">' + content +'</td>');
+
                 }
 
             });
