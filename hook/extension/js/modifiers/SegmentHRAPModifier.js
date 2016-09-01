@@ -24,10 +24,14 @@ SegmentHRAPModifier.prototype = {
 
         var self = this;
 
-        var leadersTable = $('.leaders').find("table");
+        var results = $('#results');
+        var resultsHeader = results.find("thead");
 
-        //if ($('.percentageRanking').size())
-        {
+        this.pace = resultsHeader.find('th:contains("Pace")');
+
+        this.pace.after('<th class="hrap">HRAP</th>');
+
+        if (resultsHeader.find('.hrap').size()) {
             clearInterval(self.hrapLoop);
         }
     }
