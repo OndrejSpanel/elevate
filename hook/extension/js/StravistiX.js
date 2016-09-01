@@ -381,6 +381,7 @@ StravistiX.prototype = {
     handleDefaultLeaderboardFilter_: function() {
 
         // If we are not on a segment or activity page then return...
+        // note: this does not work for run efforts, they use /segments instead of /activities
         if (!window.location.pathname.match(/^\/activities/)) {
             return;
         }
