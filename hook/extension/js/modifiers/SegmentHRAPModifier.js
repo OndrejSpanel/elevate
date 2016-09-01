@@ -151,12 +151,13 @@ SegmentHRAPModifier.prototype = {
 
         var marks = chart.find("circle").filter(".mark");
 
-        var marksXY = $.map( marks, function(c) {
-            return {'x': c.cx.baseVal.value, 'y': c.cy.baseVal.value};
-        });
+        function xyFromMark(m) {
+            return {'x': m.cx.baseVal.value, 'y': m.cy.baseVal.value};
+        }
 
         var maxY, minY;
-        marksXY.forEach(function(xy) {
+        marks.each( function(i, m) {
+            var xy = xyFromMark(m);
             minY = Helper.safeMin(minY, xy.y);
             maxY = Helper.safeMax(maxY, xy.y);
         });
@@ -173,12 +174,26 @@ SegmentHRAPModifier.prototype = {
                 return (y - fastY) / (slowY - fastY) * (slowest - fastest) + fastest;
             }
 
-            marksXY.forEach(function(xy) {
+            var mappedMarks = marks.map( function(i, m) {
+                var xy = xyFromMark(m);
+
                 var mTime = mapYToTime(xy.y);
                 var hraTime = mTime * 0.9; // TODO: proper ratio - need complete leaderboard for this !!!
-                console.debug(mapTimeToY(mTime));
-                console.debug(mapTimeToY(hraTime));
+
+                var resY = mapTimeToY(hraTime);
+
+                var mark = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                mark.setAttribute("cx", xy.x);
+                mark.setAttribute("cy", resY);
+                mark.setAttribute("r", 3);
+
+                return mark;
+
             });
+
+            var bestMark = chart.find("circle").filter(".personal-best-mark");
+
+            bestMark.after(mappedMarks);
 
             console.debug (fastest + "-" + slowest);
         });
