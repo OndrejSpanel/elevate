@@ -33,12 +33,22 @@ SegmentHRAPModifier.prototype = {
         var restHR = this.userSettings_.userRestHr;
         var targetHR = Helper.heartrateFromHeartRateReserve(hrrPercent, this.userSettings_.userMaxHr, this.userSettings_.userRestHr);
 
-        var hrapTitle = 'title="Your pace recomputed for ' + hrrPercent + '% HRR (' + targetHR + ')"';
+        function getHrapTitle(name) {
+            return 'title="Your ' + name +' recomputed for ' + hrrPercent + '% HRR (' + targetHR + ')"';
+        }
+        getHrapTitle();
 
+        // TODO: get pace / speed column index
         this.pace = resultsHeader.find('th:contains("Pace")');
+        this.speed = resultsHeader.find('th:contains("Speed")');
+        this.hr = resultsHeader.find('th:contains("HR")');
 
-        this.pace.after('<th  '+ hrapTitle + ' class="hrap">HRAP</th>');
+        var isPace = this.speed.size() == 0;
 
+        var hrapTitle = isPace ?  getHrapTitle("pace") : getHrapTitle("speed");
+        var hrapShortTitle = isPace ? "HRAP" : "HRASpeed";
+
+        this.hr.after('<th  '+ hrapTitle + ' class="hrap">' + hrapShortTitle + '</th>');
 
         results.find("tbody").find("tr").appear().on("appear", function(e, $items) {
 
@@ -52,31 +62,34 @@ SegmentHRAPModifier.prototype = {
                     var athleteUrl = $cells.filter(".athlete").find("a").attr("href");
                     var athleteId = athleteUrl.split('/').pop();
 
-                    var pace = $cells.eq(3);
-
                     var content = "";
                     if (self.athleteId_ == athleteId) {
-
                         try {
+                            var pace = $cells.eq(3);
                             var hrText = $cells.eq(4).text();
                             var hr = parseInt(hrText);
 
                             if (hr > 0) { // parse failure is NaN, will not pass
 
-                                var paceInSec = Helper.HHMMSStoSeconds(pace.text());
-
                                 var ratio = (hr - restHR) / (targetHR - restHR);
 
-                                var hrapInSec = paceInSec * ratio;
+                                if (isPace) {
+                                    var paceInSec = Helper.HHMMSStoSeconds(pace.text());
+                                    var hrapInSec = paceInSec * ratio;
+                                    content = Helper.secondsToHHMMSS(hrapInSec, true);
+                                } else {
+                                    var speed = parseFloat(pace.text());
+                                    var hraSpeed = speed / ratio;
+                                    content = hraSpeed.toFixed(1);
 
-                                content = Helper.secondsToHHMMSS(hrapInSec, true);
+                                }
                             }
                         } catch (err) {
                         }
 
                     }
 
-                    pace.after('<td ' + hrapTitle + ' class="hrap_pace">' + content +'</td>');
+                    $cells.eq(4).after('<td ' + hrapTitle + ' class="hrap_pace">' + content +'</td>');
 
                 }
 
