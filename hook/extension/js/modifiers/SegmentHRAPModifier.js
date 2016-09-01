@@ -38,9 +38,8 @@ SegmentHRAPModifier.prototype = {
             // Make any recursive leaderboardData fetched flatten with previous one
             leaderboardData.top_results.forEach(function(r) {
                 var rTime = r.elapsed_time_raw;
-                fastest = typeof fastest == "undefined" ? rTime : Math.min(fastest, rTime);
-                slowest = typeof slowest == "undefined" ? rTime : Math.max(slowest, rTime);
-
+                fastest = Helper.safeMin(fastest, rTime);
+                slowest = Helper.safeMax(slowest, rTime);
             });
 
             if (leaderboardData.top_results.length == 0) {
@@ -152,11 +151,35 @@ SegmentHRAPModifier.prototype = {
 
         var marks = chart.find("circle").filter(".mark");
 
-        var marksX = $.map( marks, function(c) {return c.cx.baseVal.value;});
-        var marksY = $.map( marks, function(c) {return c.cy.baseVal.value;});
+        var marksXY = $.map( marks, function(c) {
+            return {'x': c.cx.baseVal.value, 'y': c.cy.baseVal.value};
+        });
+
+        var maxY, minY;
+        marksXY.forEach(function(xy) {
+            minY = Helper.safeMin(minY, xy.y);
+            maxY = Helper.safeMax(maxY, xy.y);
+        });
+
+        var slowY = maxY;
+        var fastY = minY;
 
         // parse my results
         var myEffortsRange = self.findCurrentSegmentEffortsRange(self.segmentId_).then(function(fastest, slowest) {
+            function mapTimeToY(time) {
+                return (time - fastest) / (slowest - fastest) * (slowY - fastY) + fastY;
+            }
+            function mapYToTime(y) {
+                return (y - fastY) / (slowY - fastY) * (slowest - fastest) + fastest;
+            }
+
+            marksXY.forEach(function(xy) {
+                var mTime = mapYToTime(xy.y);
+                var hraTime = mTime * 0.9; // TODO: proper ratio - need complete leaderboard for this !!!
+                console.debug(mapTimeToY(mTime));
+                console.debug(mapTimeToY(hraTime));
+            });
+
             console.debug (fastest + "-" + slowest);
         });
 
