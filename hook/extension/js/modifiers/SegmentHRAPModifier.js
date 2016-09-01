@@ -30,6 +30,7 @@ SegmentHRAPModifier.prototype = {
 
         var hrrPercent = 90; // Lactate Threshold could be a reasonable value to show
 
+        var restHR = this.userSettings_.userRestHr;
         var targetHR = Helper.heartrateFromHeartRateReserve(hrrPercent, this.userSettings_.userMaxHr, this.userSettings_.userRestHr);
 
         var hrapTitle = 'title="Your pace recomputed for ' + hrrPercent + '% HRR (' + targetHR + ')"';
@@ -55,7 +56,24 @@ SegmentHRAPModifier.prototype = {
 
                     var content = "";
                     if (self.athleteId_ == athleteId) {
-                        content = "???";
+
+                        try {
+                            var hrText = $cells.eq(4).text();
+                            var hr = parseInt(hrText);
+
+                            if (hr > 0) { // parse failure is NaN, will not pass
+
+                                var paceInSec = Helper.HHMMSStoSeconds(pace.text());
+
+                                var ratio = (hr - restHR) / (targetHR - restHR);
+
+                                var hrapInSec = paceInSec * ratio;
+
+                                content = Helper.secondsToHHMMSS(hrapInSec, true);
+                            }
+                        } catch (err) {
+                        }
+
                     }
 
                     pace.after('<td ' + hrapTitle + ' class="hrap_pace">' + content +'</td>');
