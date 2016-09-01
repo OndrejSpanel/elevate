@@ -38,7 +38,6 @@ SegmentHRAPModifier.prototype = {
         }
         getHrapTitle();
 
-        // TODO: get pace / speed column index
         this.pace = resultsHeader.find('th:contains("Pace")');
         this.power = resultsHeader.find('th:contains("Power")');
         this.hr = resultsHeader.find('th:contains("HR")');
