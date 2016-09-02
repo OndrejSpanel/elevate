@@ -203,10 +203,13 @@ SegmentHRAPModifier.prototype = {
                 var mark;
 
                 if (hr != null) {
-                    var mTime = mapYToTime(xy.y);
-                    var hraTime = mTime * 0.9; // TODO: proper ratio - need complete leaderboard for this !!!
+                    var mPace = mapYToTime(xy.y);
 
-                    var resY = mapTimeToY(hraTime);
+                    var ratio = (hr - restHR) / (targetHR - restHR);
+
+                    var hraPace = mPace * ratio;
+
+                    var resY = mapTimeToY(hraPace);
 
                     // Cannot create SVG as HTML source - see http://stackoverflow.com/a/6149687/16673
                     mark = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -224,8 +227,6 @@ SegmentHRAPModifier.prototype = {
             var bestMark = chart.find("circle").filter(".personal-best-mark");
 
             bestMark.after(mappedMarks);
-
-            console.debug (fastest + "-" + slowest);
         });
 
 
