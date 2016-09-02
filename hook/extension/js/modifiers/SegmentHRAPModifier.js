@@ -168,6 +168,19 @@ SegmentHRAPModifier.prototype = {
 
 
         var myEffortsRange = self.findCurrentSegmentEfforts(self.segmentId_).then(function(fetchedLeaderboardData) {
+            // data come sorted by elapsed time, fastest first - we need them sorted by date
+
+            fetchedLeaderboardData = fetchedLeaderboardData.sort(function(left, right) {
+                var lDate = new Date(left.start_date_local_raw);
+                var rDate = new Date(right.start_date_local_raw);
+                return lDate - rDate;
+            });
+
+            // if there are more data than marks, assume oldest marks are dropped
+            if (marks.length < fetchedLeaderboardData.length) {
+                fetchedLeaderboardData = fetchedLeaderboardData.splice(- marks.length, marks.length)
+            }
+
             var fastest, slowest;
             fetchedLeaderboardData.forEach(function(r) {
                 var rTime = r.elapsed_time_raw;
@@ -185,18 +198,24 @@ SegmentHRAPModifier.prototype = {
             var mappedMarks = marks.map( function(i, m) {
                 var xy = xyFromMark(m);
 
-                var mTime = mapYToTime(xy.y);
-                var hraTime = mTime * 0.9; // TODO: proper ratio - need complete leaderboard for this !!!
+                var hr = fetchedLeaderboardData[i].avg_heart_rate;
 
-                var resY = mapTimeToY(hraTime);
+                var mark;
 
-                // Cannot create SVG as HTML source - see http://stackoverflow.com/a/6149687/16673
-                var mark = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                mark.setAttribute("class", "mark");
-                //mark.className = "mark"; // does not work, I do not know why
-                mark.setAttribute("cx", xy.x);
-                mark.setAttribute("cy", resY);
-                mark.setAttribute("r", 3);
+                if (hr != null) {
+                    var mTime = mapYToTime(xy.y);
+                    var hraTime = mTime * 0.9; // TODO: proper ratio - need complete leaderboard for this !!!
+
+                    var resY = mapTimeToY(hraTime);
+
+                    // Cannot create SVG as HTML source - see http://stackoverflow.com/a/6149687/16673
+                    mark = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    mark.setAttribute("class", "mark");
+                    //mark.className = "mark"; // does not work, I do not know why
+                    mark.setAttribute("cx", xy.x);
+                    mark.setAttribute("cy", resY);
+                    mark.setAttribute("r", 3);
+                }
 
                 return mark;
 
