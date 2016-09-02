@@ -20,13 +20,16 @@ SegmentHRAPModifier.prototype = {
 
     },
 
-    findCurrentSegmentEffortsRange: function(segmentId, page, deferred, fastest, slowest) {
+    findCurrentSegmentEfforts: function(segmentId, page, deferred, fetchedLeaderboardData) {
 
         if (!page) {
             page = 1;
         }
         if (!deferred) {
             deferred = $.Deferred();
+        }
+        if (!fetchedLeaderboardData) {
+            fetchedLeaderboardData = [];
         }
 
         var perPage = 50;
@@ -36,16 +39,12 @@ SegmentHRAPModifier.prototype = {
         jqxhr.done(function(leaderboardData) {
 
             // Make any recursive leaderboardData fetched flatten with previous one
-            leaderboardData.top_results.forEach(function(r) {
-                var rTime = r.elapsed_time_raw;
-                fastest = Helper.safeMin(fastest, rTime);
-                slowest = Helper.safeMax(slowest, rTime);
-            });
+            fetchedLeaderboardData = _.flatten(_.union(leaderboardData.top_results, fetchedLeaderboardData));
 
             if (leaderboardData.top_results.length == 0) {
-                deferred.resolve(fastest, slowest);
+                deferred.resolve(fetchedLeaderboardData);
             } else { // Not yet resolved then seek recursive on next page
-                this.findCurrentSegmentEffortsRange(segmentId, page + 1, deferred, fastest, slowest);
+                this.findCurrentSegmentEfforts(segmentId, page + 1, deferred, fetchedLeaderboardData);
             }
 
         }.bind(this)).fail(function(error) {
@@ -166,7 +165,16 @@ SegmentHRAPModifier.prototype = {
         var fastY = minY;
 
         // parse my results
-        var myEffortsRange = self.findCurrentSegmentEffortsRange(self.segmentId_).then(function(fastest, slowest) {
+
+
+        var myEffortsRange = self.findCurrentSegmentEfforts(self.segmentId_).then(function(fetchedLeaderboardData) {
+            var fastest, slowest;
+            fetchedLeaderboardData.forEach(function(r) {
+                var rTime = r.elapsed_time_raw;
+                fastest = Helper.safeMin(fastest, rTime);
+                slowest = Helper.safeMax(slowest, rTime);
+            });
+
             function mapTimeToY(time) {
                 return (time - fastest) / (slowest - fastest) * (slowY - fastY) + fastY;
             }
