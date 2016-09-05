@@ -60,12 +60,13 @@ SegmentHRAPModifier.prototype = {
 
         var self = this;
 
-        var hrrPercent = 90; // Lactate Threshold could be a reasonable value to show
 
         if (self.userSettings_.displaySegmentHRAdjustedPace) {
 
             var results = $('#results');
             var resultsHeader = results.find("thead");
+
+            var hrrPercent = 90; // Lactate Threshold could be a reasonable value to show
 
             function getHrapTitle(name) {
                 return 'title="Estimated ' + name + ' at ' + hrrPercent + '% HRR (' + targetHR + ')"';
