@@ -62,9 +62,6 @@ SegmentHRAPModifier.prototype = {
 
         var hrrPercent = 90; // Lactate Threshold could be a reasonable value to show
 
-        var restHR = this.userSettings_.userRestHr;
-        var targetHR = Helper.heartrateFromHeartRateReserve(hrrPercent, this.userSettings_.userMaxHr, this.userSettings_.userRestHr);
-
         if (self.userSettings_.displaySegmentHRAdjustedPace) {
 
             var results = $('#results');
@@ -73,6 +70,9 @@ SegmentHRAPModifier.prototype = {
             function getHrapTitle(name) {
                 return 'title="Estimated ' + name + ' at ' + hrrPercent + '% HRR (' + targetHR + ')"';
             }
+
+            var restHR = this.userSettings_.userRestHr;
+            var targetHR = Helper.heartrateFromHeartRateReserve(hrrPercent, this.userSettings_.userMaxHr, this.userSettings_.userRestHr);
 
             this.pace = resultsHeader.find('th:contains("Pace")');
             this.power = resultsHeader.find('th:contains("Power")');
@@ -197,11 +197,17 @@ SegmentHRAPModifier.prototype = {
                     }
 
                     var fastest, slowest;
+                    var minHR, maxHR;
                     fetchedLeaderboardData.forEach(function (r) {
                         var rTime = r.elapsed_time_raw;
                         fastest = Helper.safeMin(fastest, rTime);
                         slowest = Helper.safeMax(slowest, rTime);
+                        minHR = Helper.safeMin(minHR, r.avg_heart_rate);
+                        maxHR = Helper.safeMax(maxHR, r.avg_heart_rate);
                     });
+
+                    var restHR = self.userSettings_.userRestHr;
+                    var targetHR = maxHR;
 
                     function mapTimeToY(time) {
                         return (time - fastest) / (slowest - fastest) * (slowY - fastY) + fastY;
@@ -273,9 +279,11 @@ SegmentHRAPModifier.prototype = {
                     }
 
 
+                    var firstMark = chart.find("circle").eq(0);
+
                     var bestMark = chart.find("circle").filter(".personal-best-mark");
 
-                    bestMark.after(mappedMarks);
+                    firstMark.before(mappedMarks);
 
                     bestMark.after(lines);
                 });
