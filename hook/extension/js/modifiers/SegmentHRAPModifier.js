@@ -211,12 +211,10 @@ SegmentHRAPModifier.prototype = {
                         return (y - fastY) / (slowY - fastY) * (slowest - fastest) + fastest;
                     }
 
-                    var mappedMarks = marks.map(function (i, m) {
+                    var markData = marks.map(function (i, m) {
                         var xy = xyFromMark(m);
 
                         var hr = fetchedLeaderboardData[i].avg_heart_rate;
-
-                        var mark;
 
                         if (hr != null) {
                             var mTime = mapYToTime(xy.y);
@@ -226,24 +224,31 @@ SegmentHRAPModifier.prototype = {
                             var hraTime = mTime * ratio;
 
                             var resY = mapTimeToY(hraTime);
+                            return [[i, m, resY, hraTime]];
+                        }
+                    });
 
-                            var clampedY = Math.min(Math.max(topY, resY), bottomY);
+                    var mappedMarks = $.map(markData, function (imr) {
+                        var i = imr[0], m = imr[1], resY = imr[2], hraTime=imr[3];
 
-                            // Cannot create SVG as HTML source - see http://stackoverflow.com/a/6149687/16673
-                            mark = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                            mark.setAttribute("class", "hra-time-mark mark");
-                            mark.setAttribute("cx", xy.x);
-                            mark.setAttribute("cy", clampedY);
-                            mark.setAttribute("r", 3);
+                        var xy = xyFromMark(m);
 
-                            if (resY < topY || resY > bottomY) {
-                                var title = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                                title.innerHTML = Helper.secondsToHHMMSS(hraTime, true);
-                                title.setAttribute("x", xy.x + 4);
-                                title.setAttribute("y", clampedY + 4);
-                                title.setAttribute("class", "axis-tick-text");
-                                return [mark, title];
-                            }
+                        var clampedY = Math.min(Math.max(topY, resY), bottomY);
+
+                        // Cannot create SVG as HTML source - see http://stackoverflow.com/a/6149687/16673
+                        mark = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                        mark.setAttribute("class", "hra-time-mark mark");
+                        mark.setAttribute("cx", xy.x);
+                        mark.setAttribute("cy", clampedY);
+                        mark.setAttribute("r", 3);
+
+                        if (resY < topY || resY > bottomY) {
+                            var title = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                            title.innerHTML = Helper.secondsToHHMMSS(hraTime, true);
+                            title.setAttribute("x", xy.x + 4);
+                            title.setAttribute("y", clampedY + 4);
+                            title.setAttribute("class", "axis-tick-text");
+                            return [mark, title];
                         }
 
                         return mark;
