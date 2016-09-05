@@ -96,3 +96,7 @@
     font-size: small;
     font-weight: normal;
 }
+
+#athlete-history-chart .hra-time-mark {
+    stroke: rgb(150, 30, 30)
+}

@@ -157,9 +157,9 @@ SegmentHRAPModifier.prototype = {
         if (self.userSettings_.displayRecentEffortsHRAdjustedPace) {
 
             var recentEffortsChart = $("#athlete-history-chart");
-            if (!recentEffortsChart.hasClass("hrap_displayed")) {
+            if (!recentEffortsChart.hasClass("stravistiXGraph")) {
 
-                recentEffortsChart.addClass("hrap_displayed");
+                recentEffortsChart.addClass("stravistiXGraph");
 
                 var chart = recentEffortsChart.find("svg");
 
@@ -231,8 +231,7 @@ SegmentHRAPModifier.prototype = {
 
                             // Cannot create SVG as HTML source - see http://stackoverflow.com/a/6149687/16673
                             mark = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                            mark.setAttribute("class", "mark");
-                            //mark.className = "mark"; // does not work, I do not know why
+                            mark.setAttribute("class", "hra-time-mark mark");
                             mark.setAttribute("cx", xy.x);
                             mark.setAttribute("cy", clampedY);
                             mark.setAttribute("r", 3);
