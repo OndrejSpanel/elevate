@@ -58,8 +58,6 @@ SegmentHRAPModifier.prototype = {
 
     hrap: function() {
 
-        console.debug('Adding HRAP');
-
         var self = this;
 
         var hrrPercent = 90; // Lactate Threshold could be a reasonable value to show
@@ -181,8 +179,8 @@ SegmentHRAPModifier.prototype = {
                 var slowY = maxY;
                 var fastY = minY;
 
-                var topY = 0;
-                var bottomY = chart[0].getAttribute("height");
+                var topY = 10;
+                var bottomY = chart[0].getAttribute("height")-10;
 
                 self.findCurrentSegmentEfforts(self.segmentId_).then(function (fetchedLeaderboardData) {
                     // data come sorted by elapsed time, fastest first - we need them sorted by date
@@ -221,23 +219,32 @@ SegmentHRAPModifier.prototype = {
                         var mark;
 
                         if (hr != null) {
-                            var mPace = mapYToTime(xy.y);
+                            var mTime = mapYToTime(xy.y);
 
                             var ratio = (hr - restHR) / (targetHR - restHR);
 
-                            var hraPace = mPace * ratio;
+                            var hraTime = mTime * ratio;
 
-                            var resY = mapTimeToY(hraPace);
+                            var resY = mapTimeToY(hraTime);
 
-                            resY = Math.min(Math.max(topY, resY), bottomY);
+                            var clampedY = Math.min(Math.max(topY, resY), bottomY);
 
                             // Cannot create SVG as HTML source - see http://stackoverflow.com/a/6149687/16673
                             mark = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                             mark.setAttribute("class", "mark");
                             //mark.className = "mark"; // does not work, I do not know why
                             mark.setAttribute("cx", xy.x);
-                            mark.setAttribute("cy", resY);
+                            mark.setAttribute("cy", clampedY);
                             mark.setAttribute("r", 3);
+
+                            if (resY < topY || resY > bottomY) {
+                                var title = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                                title.innerHTML = Helper.secondsToHHMMSS(hraTime, true);
+                                title.setAttribute("x", xy.x + 4);
+                                title.setAttribute("y", clampedY + 4);
+                                title.setAttribute("class", "axis-tick-text");
+                                return [mark, title];
+                            }
                         }
 
                         return mark;
