@@ -181,6 +181,9 @@ SegmentHRAPModifier.prototype = {
                 var slowY = maxY;
                 var fastY = minY;
 
+                var topY = 0;
+                var bottomY = chart[0].getAttribute("height");
+
                 self.findCurrentSegmentEfforts(self.segmentId_).then(function (fetchedLeaderboardData) {
                     // data come sorted by elapsed time, fastest first - we need them sorted by date
 
@@ -225,6 +228,8 @@ SegmentHRAPModifier.prototype = {
                             var hraPace = mPace * ratio;
 
                             var resY = mapTimeToY(hraPace);
+
+                            resY = Math.min(Math.max(topY, resY), bottomY);
 
                             // Cannot create SVG as HTML source - see http://stackoverflow.com/a/6149687/16673
                             mark = document.createElementNS("http://www.w3.org/2000/svg", "circle");
