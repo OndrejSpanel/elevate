@@ -1155,7 +1155,6 @@ var userSettings = {
     displaySegmentTimeComparisonToCurrentYearPR: true,
     displaySegmentTimeComparisonPosition: true,
     displaySegmentHRAdjustedPace: false,
-    displayRecentEffortsHRAdjustedPace: true,
     reviveGoogleMaps: true,
     reviveGoogleMapsLayerType: 'terrain',
     displayActivityBestSplits: true,
