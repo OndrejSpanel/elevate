@@ -113,7 +113,7 @@ class Helper {
     /**
      * Sending message to get key:value into storageType via background page
      */
-    public static getFromStorage(extensionId: string, storageType: string, key: string, callback: Function) {
+    public static getFromStorage(extensionId: string, storageType: string, key: string, callback: (response: any) => void) {
         // Sending message to background page
         chrome.runtime.sendMessage(extensionId, {
             method: Helper.getFromStorageMethod,
@@ -240,11 +240,11 @@ class Helper {
     }
 
     public static safeMax(a: number, b: number): number {
-        return typeof a == "undefined" ? b : Math.max(a, b);
+        return a == null ? b : Math.max(a, b);
     }
 
     public static safeMin(a: number, b: number): number {
-        return typeof a == "undefined" ? b : Math.min(a, b);
+        return a == null ? b : Math.min(a, b);
     }
 
 }
