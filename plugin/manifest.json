@@ -4,7 +4,7 @@
     "short_name": "StravistiX",
     "description": "Enhance your Strava experience with StravistiX. An opensource web plugin which analyse deeper your activities and segments efforts !",
     "version": "5.7.2",
-    "version_name": "5.7.2 Stable",
+    "version_name": "5.7.2 X",
     "background": {
         "scripts": [
             "core/scripts/Helper.js",
