@@ -6,6 +6,7 @@ interface IFitnessTrendGraphScope extends IScope {
     showTrainingZone: boolean;
     showTrainingZoneChanged: Function;
     trainingZoneOnToday: ITrainingZone;
+    speedUnitData: ISpeedUnitData;
     getTrainingZone: (tsb: number) => ITrainingZone;
     usePowerMeter: boolean;
     usePowerMeterChanged: () => void;
@@ -79,6 +80,7 @@ class FitnessTrendGraph {
             $scope.fitnessDataOnToday = _.last(_.where($scope.fitnessData, {
                 previewDay: false
             }));
+            //$scope.getSpeedUnitData = Helper.getSpeedUnitData;
             $scope.trainingZoneOnToday = $scope.getTrainingZone($scope.fitnessDataOnToday.tsb);
             $scope.updateFitnessChartGraph(true, false);
         });
@@ -236,6 +238,8 @@ class FitnessTrendGraph {
             return '<div style="width: 100%; border-bottom: 1px solid ' + $colors.lightGrey + '; padding-bottom: 3px; padding-top: 3px;"></div>';
         };
 
+        //$scope.speedUnitData = Helper.getSpeedUnitData();
+
         $scope.getTrainingZone = (tsb: number) => {
 
             let trainingZone: ITrainingZone = {
@@ -343,6 +347,20 @@ class FitnessTrendGraph {
                     html += '   <tr>';
                     html += '       <td class="title">Final Stress</td>';
                     html += '       <td>' + fitnessObject.finalStressScore.toFixed(0) + '</td>';
+                    html += '   </tr>';
+                }
+
+                if (fitnessObject.runPerformance) {
+                    html += '   <tr>';
+                    html += '       <td class="title">Running performance</td>';
+
+                    let pace = 1000 / 2 / fitnessObject.runPerformance;
+
+                    //let speedUnitFactor = $scope.speedUnitData.speedUnitFactor;
+                    let speedUnitFactor = 1;
+                    let display = Helper.secondsToHHMMSS(pace / speedUnitFactor * 60, true);
+
+                    html += '       <td>' + display + '</td>';
                     html += '   </tr>';
                 }
 
@@ -535,10 +553,12 @@ class FitnessTrendGraph {
                         });
                     }
 
-                    runPerfValues.push ({
-                        x: fitData.timestamp,
-                        y: fitData.runPerformance
-                    });
+                    if (fitData.runPerformance) {
+                        runPerfValues.push({
+                            x: fitData.timestamp,
+                            y: fitData.runPerformance
+                        });
+                    }
 
                     // Constants training zones
                     freshness_zone_points.push({
