@@ -1,16 +1,24 @@
-/// <reference path="../hook/extension/config/env.ts" />
-/// <reference path="../hook/extension/js/UserSettings.ts" />
-/// <reference path="../hook/extension/js/Helper.ts" />
-/// <reference path="../hook/extension/js/interfaces/ActivityData.ts" />
-/// <reference path="../hook/extension/js/processors/VacuumProcessor.ts" />
-/// <reference path="../hook/extension/js/processors/ActivityComputer.ts" />
+/// <reference path="../plugin/core/modules/StorageManager.ts" />
+/// <reference path="../plugin/core/config/env.ts" />
+/// <reference path="../plugin/core/scripts/UserSettings.ts" />
+/// <reference path="../plugin/core/scripts/Helper.ts" />
+/// <reference path="../plugin/core/scripts/Follow.ts" />
+/// <reference path="../plugin/core/scripts/interfaces/ActivityData.ts" />
+/// <reference path="../plugin/core/scripts/interfaces/AppResources.ts" />
+/// <reference path="../plugin/core/scripts/interfaces/Sync.ts" />
+/// <reference path="../plugin/core/scripts/interfaces/ComputeActivityThreadMessage.ts" />
+/// <reference path="../plugin/core/scripts/processors/VacuumProcessor.ts" />
+/// <reference path="../plugin/core/scripts/processors/ActivityComputer.ts" />
+/// <reference path="../plugin/core/scripts/processors/ActivitiesProcessor.ts" />
+/// <reference path="../plugin/core/scripts/processors/workers/ComputeAnalysisWorker.ts" />
+/// <reference path="../plugin/core/scripts/synchronizer/ActivitiesSynchronizer.ts" />
 
 declare let Strava: any;
 
 // Class declaration for chrome typing
-declare class MediaStream {}
-declare class MediaStreamConstraints {}
-declare class DirectoryEntry {}
+declare interface MediaStream {}
+declare interface MediaStreamConstraints {}
+declare interface DirectoryEntry {}
 
 declare class QRCode {
     constructor(elementId: string, options: any);
@@ -55,9 +63,10 @@ declare class LatLon {
 interface Env {
     preview: boolean;
     analyticsTrackingID: string; // GA ID
-    forceUpdated: boolean; // Must be false in release
+    simulateUpdate: boolean; // Must be false in release
     debugMode: boolean; // Must be false in release
-    useActivityStreamCache: boolean // Must be true in release
+    useActivityStreamCache: boolean; // Must be true in release
+    endPoint: string; // Stravistix endPoint for new features
 }
 
 interface Constants {
