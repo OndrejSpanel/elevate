@@ -701,18 +701,68 @@ class FitnessTrendGraph {
 
             let yDomainMinClamped = Math.max(yDomainMin, 0);
 
+            function findActivity(ts: any): string {
+                let fitnessObject = <IFitnessActivity> (_.findWhere($scope.fitnessData, {
+                    timestamp: ts
+                }));
+                return "" + fitnessObject.activitiesName;
+            }
+
+            function getSafe(index: number) {
+                if (index < 0) return runPerfValues[0];
+                if (index > runPerfValues.length-1) return runPerfValues[runPerfValues.length-1];
+                return runPerfValues[index]
+            }
+
+            let groupsFiltered = runPerfValues.map(function (p: any, index: number){
+
+                // relaxed filter: let the value pass if it is not out of range too much
+                // TODO: consider time distance as well
+
+                let ym2 = getSafe(index - 2).y;
+                let ym1 = getSafe(index - 1).y;
+                let y1 = p.y;
+                let yp1 = getSafe(index + 1).y;
+                let yp2 = getSafe(index + 2).y;
+
+                let a = [ym2, ym1, p.y, yp1, yp2];
+
+                a.sort(function sortNumber(a,b) {
+                    return a - b;
+                });
+
+                const upTolerance = 1.15;
+                const downTolerance = 0.90;
+
+                //console.log(findActivity(p.x));
+
+                let med = a[2];
+
+                if (y1 > med * upTolerance) {
+                    //console.log("Reject up " + y1.toFixed() + " " + med.toFixed() + " " + y1 / med);
+                    return undefined;
+                }
+                if (y1 < med * downTolerance) {
+                    //console.log("Reject down " + y1.toFixed() + " " + med.toFixed() + " " + y1 / med);
+                    return undefined;
+                }
+
+                //console.log("Pass " + y1.toFixed() + " " + med.toFixed() + " " + y1 / med);
+                return p;
+            });
+
+            let runPerfValuesSmooth = groupsFiltered.filter(function(n: any){ return n != undefined });
 
             function mapYAxis2(y: number) {
                 return (y - yDomain2Min) / (yDomain2Max - yDomain2Min) * (yDomainMax - yDomainMinClamped) + yDomainMinClamped;
             }
 
-            let runPerfValuesMapped = runPerfValues.map(function(v){
+            let runPerfValuesMapped = runPerfValuesSmooth.map(function(v: any){
                 return {
                     x: v.x,
                     y: mapYAxis2(v.y)
                 };
             });
-
 
 
             let fitnessGraphData: IFitnessGraphData = {
