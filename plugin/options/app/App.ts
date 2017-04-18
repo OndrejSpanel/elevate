@@ -17,7 +17,7 @@ let $colors: IColors = {
     strava: '#e94e1b',
     ctl: '#e94e1b',
     atl: '#515151',
-    runPerf: '#c4d0f8',
+    runPerf: '#83acf8',
     tsb: '#adadad',
     lightGrey: '#eeeeee',
     midGrey: '#4e4e4e',
