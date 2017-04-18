@@ -364,6 +364,16 @@ class FitnessTrendGraph {
                     html += '   </tr>';
                 }
 
+                if (fitnessObject.ridePerformance) {
+                    html += '   <tr>';
+                    html += '       <td class="title">Riding performance</td>';
+
+                    let display = fitnessObject.ridePerformance.toFixed(0);
+
+                    html += '       <td>' + display + '</td>';
+                    html += '   </tr>';
+                }
+
                 html += '   <tr>';
                 html += '       <td class="title underlined"></td>';
                 html += '       <td class="underlined" colspan="2"></td>';
@@ -520,6 +530,7 @@ class FitnessTrendGraph {
 
             // Measured performance
             let runPerfValues: Array<any> = [];
+            let ridePerfValues: Array<any> = [];
 
             // Constants training zones
             let freshness_zone_points: Array<any> = [];
@@ -557,6 +568,12 @@ class FitnessTrendGraph {
                         runPerfValues.push({
                             x: fitData.timestamp,
                             y: fitData.runPerformance
+                        });
+                    }
+                    if (fitData.ridePerformance) {
+                        ridePerfValues.push({
+                            x: fitData.timestamp,
+                            y: fitData.ridePerformance
                         });
                     }
 
@@ -688,9 +705,23 @@ class FitnessTrendGraph {
             ], (d: any) => {
                 return d;
             });
-
             let yDomain2Min = d3.min([
                 d3.min(runPerfValues, (d: any) => {
+                    return parseInt(d.y);
+                })
+            ], (d: any) => {
+                return d;
+            });
+
+            let yDomain3Max = d3.max([
+                d3.max(ridePerfValues, (d: any) => {
+                    return parseInt(d.y);
+                })
+            ], (d: any) => {
+                return d;
+            });
+            let yDomain3Min = d3.min([
+                d3.min(ridePerfValues, (d: any) => {
                     return parseInt(d.y);
                 })
             ], (d: any) => {
@@ -756,6 +787,9 @@ class FitnessTrendGraph {
             function mapYAxis2(y: number) {
                 return (y - yDomain2Min) / (yDomain2Max - yDomain2Min) * (yDomainMax - yDomainMinClamped) + yDomainMinClamped;
             }
+            function mapYAxis3(y: number) {
+                return (y - yDomain3Min) / (yDomain3Max - yDomain3Min) * (yDomainMax - yDomainMinClamped) + yDomainMinClamped;
+            }
 
             let runPerfValuesMapped = runPerfValuesSmooth.map(function(v: any){
                 return {
@@ -764,6 +798,12 @@ class FitnessTrendGraph {
                 };
             });
 
+            let ridePerfValuesMapped = ridePerfValues.map(function(v: any){
+                return {
+                    x: v.x,
+                    y: mapYAxis3(v.y)
+                };
+            });
 
             let fitnessGraphData: IFitnessGraphData = {
                 curves: [{
@@ -799,6 +839,10 @@ class FitnessTrendGraph {
                     key: "Running performance",
                     values: runPerfValuesMapped,
                     color: $colors.runPerf
+                }, {
+                    key: "Riding performance",
+                    values: ridePerfValuesMapped,
+                    color: $colors.ridePerf
                 }],
                 yDomain: [yDomainMin * 1.05, yDomainMax * 1.05]
             };
