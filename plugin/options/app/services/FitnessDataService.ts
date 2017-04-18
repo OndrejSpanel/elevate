@@ -13,7 +13,9 @@ interface IActivitiesWithFitness {
     powerStressScore?: number;
     swimStressScore?: number;
     runningPerformance?: number,
-    runningTime?: number
+    runningTime?: number,
+    ridingPerformance?: number,
+    ridingTime?: number,
 }
 
 interface IActivitiesWithFitnessDaysOff {
@@ -30,6 +32,8 @@ interface IActivitiesWithFitnessDaysOff {
     finalStressScore: number;
     finalRunningPerformance: number,
     finalRunningTime: number,
+    finalRidingPerformance: number,
+    finalRidingTime: number,
     previewDay: boolean;
 }
 
@@ -47,6 +51,7 @@ interface IFitnessActivity {
     atl: number;
     tsb: number;
     runPerformance?: number,
+    ridePerformance?: number,
     previewDay: boolean;
 }
 
@@ -101,6 +106,7 @@ class FitnessDataService {
 
                 let hasHeartRateData: boolean = (activity.extendedStats && !_.isEmpty(activity.extendedStats.heartRateData) && _.isNumber(activity.extendedStats.heartRateData.TRIMP));
                 let hasRunningData: boolean = (activity.type === "Run" && activity.extendedStats && !_.isEmpty(activity.extendedStats.heartRateData) && !_.isEmpty(activity.extendedStats.paceData));
+                let hasRidingData: boolean = (activity.type === "Ride" && activity.extendedStats && !_.isEmpty(activity.extendedStats.heartRateData) && !_.isEmpty(activity.extendedStats.powerData));
 
                 let isPowerMeterUsePossible: boolean = (activity.type === "Ride" || activity.type === "VirtualRide")
                     && this.usePowerMeter && _.isNumber(this.userFTP)
@@ -138,17 +144,26 @@ class FitnessDataService {
                         activityWithFitness.swimStressScore = Math.pow(swimIntensity, 3) * (activity.elapsed_time_raw / 3600) * 100; // Swim Stress Score = Intensity^3 * TotalTimeInHours * 100
                     }
 
+                    const minHrr = 30;  // activity with too low HRR is not representative enough
+                    const minTimeSeconds = 10*60; // too short activity is not representative enough
                     if (hasRunningData) {
                         let hrr = activity.extendedStats.heartRateData.activityHeartRateReserve;
                         let ga = activity.extendedStats.paceData.avgGAP / activity.extendedStats.paceData.avgPace;
-                        const minHrr = 30;  // activity with too low HRR is not representative enough
-                        const minTimeSeconds = 3*60; // too short activity is not representative enough
                         if (hrr >= minHrr && activity.moving_time_raw >= minTimeSeconds ) {
                             let timeInMinutes = activity.moving_time_raw / 60 * hrr / 100 * ga;
 
                             activityWithFitness.runningPerformance = activity.distance_raw / timeInMinutes;
                             activityWithFitness.runningTime = timeInMinutes;
                         }
+                    }
+
+                    if (hasRidingData) {
+                        let hrr = activity.extendedStats.heartRateData.activityHeartRateReserve;
+                        if (hrr >= minHrr && activity.moving_time_raw >= minTimeSeconds ) {
+                            activityWithFitness.ridingPerformance = activity.extendedStats.powerData.weightedPower / (hrr / 100);
+                            activityWithFitness.ridingTime = activity.moving_time_raw;
+                        }
+
                     }
 
                     cleanedActivities.push(activityWithFitness);
@@ -207,7 +222,9 @@ class FitnessDataService {
                     previewDay: false,
                     finalStressScore: 0,
                     finalRunningPerformance: 0,
-                    finalRunningTime: 0
+                    finalRunningTime: 0,
+                    finalRidingPerformance: 0,
+                    finalRidingTime: 0,
                 };
 
                 if (activitiesWithFitnessThatDay.length) {
@@ -259,6 +276,18 @@ class FitnessDataService {
                             fitnessObjectOnCurrentDay.finalRunningPerformance = sumPerformance / sumTime;
                         }
 
+                        // Apply riding performance for that day
+                        if (fitnessActivity.ridingPerformance) {
+                            let sumTime = fitnessObjectOnCurrentDay.finalRidingTime + fitnessActivity.ridingTime;
+                            let sumPerformance = (
+                                fitnessObjectOnCurrentDay.finalRidingPerformance * fitnessObjectOnCurrentDay.finalRidingTime +
+                                fitnessActivity.ridingPerformance * fitnessActivity.ridingTime
+                            );
+
+                            fitnessObjectOnCurrentDay.finalRidingTime = sumTime;
+                            fitnessObjectOnCurrentDay.finalRidingPerformance = sumPerformance / sumTime;
+                        }
+
                         // Apply final stress score for that day
                         if (fitnessActivity.powerStressScore) { // Use PSS has priority over TRIMP
 
@@ -297,6 +326,8 @@ class FitnessDataService {
                     finalStressScore: 0,
                     finalRunningTime: 0,
                     finalRunningPerformance: 0,
+                    finalRidingTime: 0,
+                    finalRidingPerformance: 0,
                 };
 
                 everyDayFitnessObjects.push(fitnessObjectOnCurrentDay)
@@ -320,6 +351,7 @@ class FitnessDataService {
         let atl: number = 0;
         let tsb: number = 0;
         let runPerformance : number = undefined;
+        let ridePerformance : number = undefined;
         let results: Array<IFitnessActivity> = [];
 
         _.each(fitnessObjectsWithDaysOff, (trimpObject: IActivitiesWithFitnessDaysOff, index: number, list: Array<IActivitiesWithFitnessDaysOff>) => {
@@ -331,6 +363,11 @@ class FitnessDataService {
                 runPerformance = trimpObject.finalRunningPerformance;
             } else {
                 runPerformance = undefined;
+            }
+            if (trimpObject.finalRidingTime > 0 && trimpObject.finalRidingPerformance > 0) {
+                ridePerformance = trimpObject.finalRidingPerformance;
+            } else {
+                ridePerformance = undefined;
             }
 
 
@@ -345,6 +382,7 @@ class FitnessDataService {
                 tsb: tsb,
                 previewDay: trimpObject.previewDay,
                 runPerformance: runPerformance,
+                ridePerformance: ridePerformance,
             };
 
             if (_.isNumber(trimpObject.trimpScore) && trimpObject.trimpScore > 0) {
