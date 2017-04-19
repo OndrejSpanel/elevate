@@ -744,8 +744,13 @@ class FitnessTrendGraph {
             let runPerfValuesSmooth = runPerfValues.map(filterSmooth).filter(filterSmoothResults);
             let ridePerfValuesSmooth = ridePerfValues.map(filterSmooth).filter(filterSmoothResults);
 
-            let runPerfValuesMapped = yDomain2.mapValues(runPerfValuesSmooth, yDomain);
-            let ridePerfValuesMapped = yDomain3.mapValues(ridePerfValuesSmooth, yDomain);
+            let runPerfValuesMapped = yDomain2.mapValues(runPerfValues, yDomain);
+            let ridePerfValuesMapped = yDomain3.mapValues(ridePerfValues, yDomain);
+
+            let runPerfValuesSmoothMapped = yDomain2.mapValues(runPerfValuesSmooth, yDomain);
+            let ridePerfValuesSmoothMapped = yDomain3.mapValues(ridePerfValuesSmooth, yDomain);
+
+            const showUnfiltered = true;
 
             let fitnessGraphData: IFitnessGraphData = {
                 curves: [{
@@ -779,11 +784,19 @@ class FitnessTrendGraph {
                     color: $colors.ctl
                 }, {
                     key: "Running performance",
-                    values: runPerfValuesMapped,
+                    values: runPerfValuesSmoothMapped,
                     color: $colors.runPerf
                 }, {
                     key: "Riding performance",
-                    values: ridePerfValuesMapped,
+                    values: ridePerfValuesSmoothMapped,
+                    color: $colors.ridePerf
+                }, {
+                    key: "Running performance raw",
+                    values: showUnfiltered ? runPerfValuesMapped : [],
+                    color: $colors.runPerf
+                }, {
+                    key: "Riding performance raw",
+                    values: showUnfiltered ? ridePerfValuesMapped : [],
                     color: $colors.ridePerf
                 }],
                 yDomain: [yDomain.min * 1.05, yDomain.max * 1.05]
