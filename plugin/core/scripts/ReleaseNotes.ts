@@ -18,6 +18,19 @@ interface IReleaseNote {
 
 let releaseNotes: Array<IReleaseNote> = [
     {
+        version: '5.7.3',
+        message: 'Performance graph in fitness trend',
+        hotFixes: [
+        ],
+        features: [
+            'Added Performance graph in fitness trend',
+            'Forked as Stravissimo'
+        ],
+        hideFeatureReleaseNote: false,
+        fixes: [
+        ],
+    },
+    {
         version: '5.7.2',
         message: 'New Year progressions improvements (Old version reactivated in Strava profile page) <strong>+</strong> Custom running power zones <strong>+</strong> Hide Virtual Rides',
         hotFixes: [
