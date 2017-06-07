@@ -111,7 +111,7 @@ class ActivityComputer {
         this.movementData = null;
 
         if (activityStream.velocity_smooth) {
-            this.movementData = this.moveData(activityStream.velocity_smooth, activityStream.time);
+            this.movementData = this.moveData(activityStream.velocity_smooth, activityStream.time, activityStream.grade_smooth);
         }
 
         // Q1 Speed
@@ -282,7 +282,7 @@ class ActivityComputer {
         return currentValue * delta - ((currentValue - previousValue) * delta) / 2;
     }
 
-    protected moveData(velocityArray: Array<number>, timeArray: Array<number>): IMoveData {
+    protected moveData(velocityArray: Array<number>, timeArray: Array<number>, gradeArray: Array<number>): IMoveData {
 
         if (_.isEmpty(velocityArray) || _.isEmpty(timeArray)) {
             return null;
@@ -290,6 +290,8 @@ class ActivityComputer {
 
         let genuineAvgSpeedSum: number = 0,
             genuineAvgSpeedSumCount: number = 0;
+        let genuineAvgGASpeedSum: number = 0,
+            genuineAvgGASpeedSumCount: number = 0;
         let speedsNonZero: Array<number> = [];
         let speedsNonZeroDuration: Array<number> = [];
         let speedVarianceSum: number = 0;
@@ -322,10 +324,31 @@ class ActivityComputer {
                     // Compute variance speed
                     speedVarianceSum += Math.pow(currentSpeed, 2);
 
+                    let forSum = this.valueForSum(velocityArray[i] * 3.6, velocityArray[i - 1] * 3.6, movingSeconds);
+
                     // distance
-                    genuineAvgSpeedSum += this.valueForSum(velocityArray[i] * 3.6, velocityArray[i - 1] * 3.6, movingSeconds);
+                    genuineAvgSpeedSum += forSum;
                     // time
                     genuineAvgSpeedSumCount += movingSeconds;
+
+                    let grade = gradeArray[i];
+
+                    let gradeAdjust: number;
+
+                    if (grade > 0) {
+                        const upGradeAdjust = 4; // 1 m up means 4 m more forward
+                        gradeAdjust = 1 + grade * upGradeAdjust * 0.01;
+                    } else {
+                        const downGradeAdjust = 2; // 1 m down means 2 m less forward
+                        const maxDown = 0.15; // handle extremes - too steep downhill no longer helps
+                        let gradeDown = Math.min(maxDown, -grade);
+                        gradeAdjust = 1 - gradeDown * downGradeAdjust * 0.01;
+                    }
+
+                    // distance
+                    genuineAvgGASpeedSum += forSum * gradeAdjust;
+                    // time
+                    genuineAvgGASpeedSumCount += movingSeconds;
 
                     // Find speed zone id
                     let speedZoneId: number = this.getZoneId(this.userSettings.zones.speed, currentSpeed);
@@ -351,10 +374,10 @@ class ActivityComputer {
 
         // Finalize compute of Speed
         let genuineAvgSpeed: number = genuineAvgSpeedSum / genuineAvgSpeedSumCount;
+        let genuineAvgGASpeed: number = genuineAvgGASpeedSum / genuineAvgGASpeedSumCount;
         let varianceSpeed: number = (speedVarianceSum / speedsNonZero.length) - Math.pow(genuineAvgSpeed, 2);
         let standardDeviationSpeed: number = (varianceSpeed > 0) ? Math.sqrt(varianceSpeed) : 0;
         let percentiles: Array<number> = Helper.weightedPercentiles(speedsNonZero, speedsNonZeroDuration, [0.25, 0.5, 0.75]);
-
 
         let speedData: ISpeedData = {
             genuineAvgSpeed: genuineAvgSpeed,
@@ -370,12 +393,23 @@ class ActivityComputer {
 
         let paceData: IPaceData = {
             avgPace: parseInt(((1 / genuineAvgSpeed) * 60 * 60).toFixed(0)), // send in seconds
+            avgGAP: parseInt(((1 / genuineAvgGASpeed) * 60 * 60).toFixed(0)), // send in seconds
             lowerQuartilePace: this.convertSpeedToPace(percentiles[0]),
             medianPace: this.convertSpeedToPace(percentiles[1]),
             upperQuartilePace: this.convertSpeedToPace(percentiles[2]),
             variancePace: this.convertSpeedToPace(varianceSpeed),
             paceZones: (this.returnZones) ? paceZones : null
         };
+
+        /*
+        if (this.activityType === 'Run') {
+            console.log("Grade adjust " + (genuineAvgGASpeed / genuineAvgSpeed).toFixed(2));
+            console.log("Total distance " + genuineAvgSpeedSum / 3.6 + " => " + genuineAvgGASpeedSum / 3.6);
+            console.log("      speed " + genuineAvgSpeed + " => " + genuineAvgGASpeed);
+            console.log("      time " + genuineAvgSpeedSumCount);
+            console.log("      pace " + paceData.avgPace + " => " + paceData.avgGAP);
+        }
+        */
 
         let moveData: IMoveData = {
             movingTime: genuineAvgSpeedSumCount,
