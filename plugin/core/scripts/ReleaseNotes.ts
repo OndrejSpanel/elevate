@@ -18,7 +18,7 @@ interface IReleaseNote {
 
 let releaseNotes: Array<IReleaseNote> = [
     {
-        version: '5.7.3',
+        version: '5.7.4',
         message: 'Performance graph in fitness trend',
         hotFixes: [
         ],

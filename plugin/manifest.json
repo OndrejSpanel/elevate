@@ -3,8 +3,8 @@
     "name": "Stravissimo for Strava",
     "short_name": "Stravissimo",
     "description": "Stravissimo - fork of StravistiX, an opensource web plugin which analyse deeper your activities and segments efforts !",
-    "version": "5.7.3",
-    "version_name": "5.7.3 Stable",
+    "version": "5.7.4",
+    "version_name": "5.7.4 Stable",
     "background": {
         "scripts": [
             "core/scripts/Helper.js",
