@@ -9,11 +9,11 @@ class ReliveCCModifier implements IModifier {
     public modify(): void {
 
         let html: string = "<li class='group'>";
-        html += "<div class='title' style='font-size: 14px; cursor: pointer;' id='stravistix_relivecc'>Relive Ride <sup style='color:#FC4C02; font-size:10px;'>NEW</sup></div>";
+        html += "<div class='title' style='font-size: 14px; cursor: pointer;' id='stravissimo_relivecc'>Relive Ride <sup style='color:#FC4C02; font-size:10px;'>NEW</sup></div>";
 
         $("#pagenav").append($(html)).each(() => {
 
-            $('#stravistix_relivecc').click((evt: Event) => {
+            $('#stravissimo_relivecc').click((evt: Event) => {
 
                 evt.preventDefault();
                 evt.stopPropagation();

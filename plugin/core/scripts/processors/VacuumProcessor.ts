@@ -3,7 +3,7 @@
  */
 class VacuumProcessor {
 
-    public static cachePrefix: string = 'stravistix_activityStream_';
+    public static cachePrefix: string = 'stravissimo_activityStream_';
 
     /**
      *  Get the strava athlete id connected

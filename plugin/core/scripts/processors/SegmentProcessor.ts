@@ -13,7 +13,7 @@ interface ISegmentInfo {
 
 class SegmentProcessor {
 
-    public static cachePrefix: string = 'stravistix_nearbySegments_';
+    public static cachePrefix: string = 'stravissimo_nearbySegments_';
 
     protected vacuumProcessor: VacuumProcessor;
     protected segmentId: number;

@@ -9,7 +9,7 @@ class BikeOdoProcessor {
         this.vacuumProcessor = vacuumProcessor;
         this.cacheAgingTime = 120 * 60; // 2 hours
         this.athleteId = athleteId;
-        this.cacheKey = 'stravistix_bikeOdo_' + athleteId + '_cache';
+        this.cacheKey = 'stravissimo_bikeOdo_' + athleteId + '_cache';
     }
 
     public getBikeOdoOfAthlete(callback: (bikeOdoArray: Array<string>) => void): void {

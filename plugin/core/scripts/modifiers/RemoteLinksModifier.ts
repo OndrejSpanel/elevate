@@ -34,8 +34,8 @@ class RemoteLinksModifier implements IModifier {
         // Activity page
         // Adding remote view links on left panel
         let html: string = "<li class='group'>";
-        html += "<div class='title' id='stravistix_remote_title' style='font-size: 14px; cursor: pointer;'>Remote Views</div>";
-        html += "<ul style='display: none;' id='stravistix_remoteViews'>";
+        html += "<div class='title' id='stravissimo_remote_title' style='font-size: 14px; cursor: pointer;'>Remote Views</div>";
+        html += "<ul style='display: none;' id='stravissimo_remoteViews'>";
         _.each(remoteViewActivityLinksArray, (linkArray: Array<string>) => {
             html += "<li>";
             html += "<a data-menu='' " + linkArray[3] + " target='_blank' style='color: #333;' href='" + linkArray[1] + this.activityId + linkArray[2] + "'>" + linkArray[0] + "</a>";
@@ -50,15 +50,15 @@ class RemoteLinksModifier implements IModifier {
                 evt.stopPropagation();
             });
 
-            $('#stravistix_remote_title').click((evt: Event) => {
+            $('#stravissimo_remote_title').click((evt: Event) => {
 
                 evt.preventDefault();
                 evt.stopPropagation();
 
-                if ($('#stravistix_remoteViews').is(':visible')) {
-                    $('#stravistix_remoteViews').slideUp();
+                if ($('#stravissimo_remoteViews').is(':visible')) {
+                    $('#stravissimo_remoteViews').slideUp();
                 } else {
-                    $('#stravistix_remoteViews').slideDown();
+                    $('#stravissimo_remoteViews').slideDown();
                 }
 
             });

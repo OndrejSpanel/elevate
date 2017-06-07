@@ -183,7 +183,7 @@ class StravistiX {
             return;
         }
 
-        if (window.location.search.match('stravistixSync')) {
+        if (window.location.search.match('stravissimoSync')) {
             console.log('Skip handlePluginInstallOrUpgrade since we are on a sync');
             return;
         }
@@ -255,7 +255,7 @@ class StravistiX {
 
                     follow('send', 'event', updatedToEvent.categorie, updatedToEvent.action, updatedToEvent.name);
 
-                    StorageManager.setCookieSeconds('stravistix_athlete_update_done', false, 0); // Remove stravistix_athlete_update_done cookie to trigger athlete commit earlier
+                    StorageManager.setCookieSeconds('stravissimo_athlete_update_done', false, 0); // Remove stravissimo_athlete_update_done cookie to trigger athlete commit earlier
 
                 } else {
                     console.log("No install or update detected");
@@ -1073,9 +1073,9 @@ class StravistiX {
      */
     protected handleTrackTodayIncomingConnection(): void {
 
-        let userHasConnectSince24Hour: boolean = (StorageManager.getCookie('stravistix_daily_connection_done') == 'true');
+        let userHasConnectSince24Hour: boolean = (StorageManager.getCookie('stravissimo_daily_connection_done') == 'true');
 
-        if (env.debugMode) console.log("Cookie 'stravistix_daily_connection_done' value found is: " + userHasConnectSince24Hour);
+        if (env.debugMode) console.log("Cookie 'stravissimo_daily_connection_done' value found is: " + userHasConnectSince24Hour);
 
         if (_.isNull(this.athleteId)) {
             if (env.debugMode) console.log("athleteId is empty value: " + this.athleteId);
@@ -1102,24 +1102,24 @@ class StravistiX {
             // Push IncomingConnection
             let eventName: string = accountName + ' #' + this.athleteId + ' v' + this.appResources.extVersion;
 
-            if (env.debugMode) console.log("Cookie 'stravistix_daily_connection_done' not found, send track <IncomingConnection> / <" + accountType + "> / <" + eventName + ">");
+            if (env.debugMode) console.log("Cookie 'stravissimo_daily_connection_done' not found, send track <IncomingConnection> / <" + accountType + "> / <" + eventName + ">");
 
             if (!env.debugMode) {
                 follow('send', 'event', 'DailyConnection', eventAction, eventName);
             }
 
             // Create cookie to avoid push during 1 day
-            StorageManager.setCookie('stravistix_daily_connection_done', true, 1);
+            StorageManager.setCookie('stravissimo_daily_connection_done', true, 1);
 
         } else {
-            if (env.debugMode) console.log("Cookie 'stravistix_daily_connection_done' exist, DO NOT TRACK IncomingConnection");
+            if (env.debugMode) console.log("Cookie 'stravissimo_daily_connection_done' exist, DO NOT TRACK IncomingConnection");
         }
     }
 
     protected handleAthleteUpdate(): void {
-        if (!StorageManager.getCookie('stravistix_athlete_update_done')) {
+        if (!StorageManager.getCookie('stravissimo_athlete_update_done')) {
             this.commitAthleteUpdate();
-            StorageManager.setCookieSeconds('stravistix_athlete_update_done', true, 6 * 60 * 60); // Don't update for 6 hours
+            StorageManager.setCookieSeconds('stravissimo_athlete_update_done', true, 6 * 60 * 60); // Don't update for 6 hours
         }
     }
 
@@ -1161,7 +1161,7 @@ class StravistiX {
             return;
         }
 
-        if (window.location.search.match('stravistixSync')) {
+        if (window.location.search.match('stravissimoSync')) {
             console.log('Sync Popup. Skip handleOnFlyActivitiesSync()');
             return;
         }
@@ -1182,14 +1182,14 @@ class StravistiX {
                         console.log('Last sync performed more than ' + this.userSettings.autoSyncMinutes + ' minutes. auto-sync now');
 
                         // Avoid concurrent auto-sync when several tabs opened
-                        if (StorageManager.getCookie('stravistix_auto_sync_locker')) {
+                        if (StorageManager.getCookie('stravissimo_auto_sync_locker')) {
                             let warnMessage = 'Auto-sync locked for 10 minutes. Skipping auto-sync. Why? another tab/window may have started the sync. ';
                             warnMessage += 'If auto-sync has been interrupted (eg. tab closed), auto-sync will be available back in 10 minutes.';
                             console.warn(warnMessage);
                             return;
                         } else {
-                            console.log('Auto-sync started, set stravistix_auto_sync_locker to true.')
-                            StorageManager.setCookieSeconds('stravistix_auto_sync_locker', true, 60 * 10); // 10 minutes
+                            console.log('Auto-sync started, set stravissimo_auto_sync_locker to true.')
+                            StorageManager.setCookieSeconds('stravissimo_auto_sync_locker', true, 60 * 10); // 10 minutes
                         }
 
                         // Start sync
@@ -1198,14 +1198,14 @@ class StravistiX {
                             console.log('Sync finished', syncResult);
 
                             // Remove auto-sync lock
-                            StorageManager.setCookieSeconds('stravistix_auto_sync_locker', true, 0);
+                            StorageManager.setCookieSeconds('stravissimo_auto_sync_locker', true, 0);
 
                         }, (err: any) => {
 
                             console.error('Sync error', err);
 
                             // Remove auto-sync lock
-                            StorageManager.setCookieSeconds('stravistix_auto_sync_locker', true, 0);
+                            StorageManager.setCookieSeconds('stravissimo_auto_sync_locker', true, 0);
 
                             let errorUpdate: any = {
                                 stravaId: this.athleteId,
@@ -1245,13 +1245,13 @@ class StravistiX {
 
     protected handleActivitiesSyncFromOutside() {
 
-        if (!window.location.search.match('stravistixSync')) { // Skipping is we are not on sync popup
+        if (!window.location.search.match('stravissimoSync')) { // Skipping is we are not on sync popup
             return;
         }
 
         let urlParams = Helper.params(window.location);
 
-        let allowSync = (urlParams.stravistixSync === 'true') ? true : false;
+        let allowSync = (urlParams.stravissimoSync === 'true') ? true : false;
         if (!allowSync) {
             return;
         }

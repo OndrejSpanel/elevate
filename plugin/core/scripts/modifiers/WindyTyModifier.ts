@@ -77,8 +77,8 @@ class WindyTyModifier implements IModifier {
         ];
 
         let html: string = "<li class='group'>";
-        html += "<div class='title' style='font-size: 14px; cursor: pointer;' id='stravistix_weather_title'>Weather</div>";
-        html += "<ul style='display: none;' id='stravistix_weatherList'>";
+        html += "<div class='title' style='font-size: 14px; cursor: pointer;' id='stravissimo_weather_title'>Weather</div>";
+        html += "<ul style='display: none;' id='stravissimo_weatherList'>";
         $.each(remoteViewActivityLinksArray, function () {
             html += "<li>";
             html += "<a data-wheater-windyty='" + this[1] + "' href='#'>" + this[0] + "</a>";
@@ -94,15 +94,15 @@ class WindyTyModifier implements IModifier {
                 this.showWeather($(evt.target).attr('data-wheater-windyty'));
             });
 
-            $('#stravistix_weather_title').click((evt) => {
+            $('#stravissimo_weather_title').click((evt) => {
 
                 evt.preventDefault();
                 evt.stopPropagation();
 
-                if ($('#stravistix_weatherList').is(':visible')) {
-                    $('#stravistix_weatherList').slideUp();
+                if ($('#stravissimo_weatherList').is(':visible')) {
+                    $('#stravissimo_weatherList').slideUp();
                 } else {
-                    $('#stravistix_weatherList').slideDown();
+                    $('#stravissimo_weatherList').slideDown();
                 }
 
             });

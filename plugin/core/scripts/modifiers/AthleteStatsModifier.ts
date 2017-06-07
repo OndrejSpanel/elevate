@@ -38,24 +38,24 @@ class AthleteStatsModifier implements IModifier {
             this.handleProgressStatsForceRefresh();
         });
 
-        this.progressThisYear.find('#stravistix_yearProgress_incVirtualRides').prop('checked', StorageManager.getCookie('stravistix_yearProgress_incVirtualRides') === "true");
-        this.progressThisYear.find('#stravistix_yearProgress_incVirtualRides').on('click', () => {
-            StorageManager.setCookie('stravistix_yearProgress_incVirtualRides', $('#stravistix_yearProgress_incVirtualRides').prop('checked'), 365);
+        this.progressThisYear.find('#stravissimo_yearProgress_incVirtualRides').prop('checked', StorageManager.getCookie('stravissimo_yearProgress_incVirtualRides') === "true");
+        this.progressThisYear.find('#stravissimo_yearProgress_incVirtualRides').on('click', () => {
+            StorageManager.setCookie('stravissimo_yearProgress_incVirtualRides', $('#stravissimo_yearProgress_incVirtualRides').prop('checked'), 365);
             this.handleProgressStatsForceRefresh();
         });
 
-        this.progressThisYear.find('#stravistix_yearProgress_incCommutes').prop('checked', StorageManager.getCookie('stravistix_yearProgress_incCommutes') === "true");
-        this.progressThisYear.find('#stravistix_yearProgress_incCommutes').on('click', () => {
-            StorageManager.setCookie('stravistix_yearProgress_incCommutes', $('#stravistix_yearProgress_incCommutes').prop('checked'), 365);
+        this.progressThisYear.find('#stravissimo_yearProgress_incCommutes').prop('checked', StorageManager.getCookie('stravissimo_yearProgress_incCommutes') === "true");
+        this.progressThisYear.find('#stravissimo_yearProgress_incCommutes').on('click', () => {
+            StorageManager.setCookie('stravissimo_yearProgress_incCommutes', $('#stravissimo_yearProgress_incCommutes').prop('checked'), 365);
             this.handleProgressStatsForceRefresh();
         });
     }
 
     protected formatData(activities: Array<any>): Array<any> {
 
-        let includeVirtualRide: boolean = (StorageManager.getCookie('stravistix_yearProgress_incVirtualRides') === "true");
+        let includeVirtualRide: boolean = (StorageManager.getCookie('stravissimo_yearProgress_incVirtualRides') === "true");
 
-        let includeCommutes: boolean = (StorageManager.getCookie('stravistix_yearProgress_incCommutes') === "true");
+        let includeCommutes: boolean = (StorageManager.getCookie('stravissimo_yearProgress_incCommutes') === "true");
 
         let formattedData: Array<any> = [];
         let activity: any;
@@ -228,7 +228,7 @@ class AthleteStatsModifier implements IModifier {
             activitiesFromCacheObject: Array<any> = JSON.parse(activitiesFromCache) || [],
             progress: JQuery = $("#progress-goals-v2");
 
-        this.progressThisYear = $("<div class='section'><h3>My year progressions to current month/day (old version) <span id='athleteStatsLoading' class='ajax-loading-image'></span></h3><div>This panel displays your progress for each beginning of year to current month and day. Assuming today is May 25, this panel shows \"What I've accomplished by May 25 of this year compared to previous years during the same period.\"<br/><br/><input type='checkbox' id='stravistix_yearProgress_incVirtualRides'/> Include Virtual Rides <input type='checkbox' id='stravistix_yearProgress_incCommutes'/> Include Commutes</div><div><ul class='switches'><li><a class='button btn-xs' data-activity-type='0' style='display: none;'>Cycling</a></li><li><a class='button btn-xs' data-activity-type='1' style='display: none;'>Running</a></li><li class='last-child' id='athleteStatsShowChart' style='display: none;'><a class='button btn-xs' style='max-height: 24px;' title='Chart'><img style='height: 12px;' src='" + self.appResources.trendingUpIcon + "'/></a></li><li>&nbsp;&nbsp;&nbsp;<a href='#' id='athleteStatsLoadingForceRefresh' style='display: none'>Force refresh</a></li></ul></div></div>");
+        this.progressThisYear = $("<div class='section'><h3>My year progressions to current month/day (old version) <span id='athleteStatsLoading' class='ajax-loading-image'></span></h3><div>This panel displays your progress for each beginning of year to current month and day. Assuming today is May 25, this panel shows \"What I've accomplished by May 25 of this year compared to previous years during the same period.\"<br/><br/><input type='checkbox' id='stravissimo_yearProgress_incVirtualRides'/> Include Virtual Rides <input type='checkbox' id='stravissimo_yearProgress_incCommutes'/> Include Commutes</div><div><ul class='switches'><li><a class='button btn-xs' data-activity-type='0' style='display: none;'>Cycling</a></li><li><a class='button btn-xs' data-activity-type='1' style='display: none;'>Running</a></li><li class='last-child' id='athleteStatsShowChart' style='display: none;'><a class='button btn-xs' style='max-height: 24px;' title='Chart'><img style='height: 12px;' src='" + self.appResources.trendingUpIcon + "'/></a></li><li>&nbsp;&nbsp;&nbsp;<a href='#' id='athleteStatsLoadingForceRefresh' style='display: none'>Force refresh</a></li></ul></div></div>");
 
 
         $(this.progressThisYear).on("click", "a[data-activity-type]", function (e) {

@@ -432,7 +432,7 @@ class ActivityBestSplitsModifier implements IModifier {
         this.saveSplitsConfigrationMethod = saveSplitsConfigrationMethod || function () {
             };
         this.distanceUnit = ActivityBestSplitsModifier.Units.Kilometers;
-        this.cacheKeyPrefix = 'stravistix_bestsplit_' + this.activityId + '_';
+        this.cacheKeyPrefix = 'stravissimo_bestsplit_' + this.activityId + '_';
     }
 
     protected filterData(data: Array<number>, distance: Array<number>, smoothing: number): Array<number> {

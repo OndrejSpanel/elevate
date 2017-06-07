@@ -27,13 +27,13 @@ class VirtualPartnerModifier implements IModifier {
 
             let r: any = functionRender.apply(this, Array.prototype.slice.call(arguments));
 
-            if ($('.stravistix_exportVpu').length < 1) {
+            if ($('.stravissimo_exportVpu').length < 1) {
 
-                let exportButtonHtml: string = '<a class="btn-block btn-xs button raceshape-btn stravistix_exportVpu" id="stravistix_exportVpu">Export effort as Virtual Partner</a>';
+                let exportButtonHtml: string = '<a class="btn-block btn-xs button raceshape-btn stravissimo_exportVpu" id="stravissimo_exportVpu">Export effort as Virtual Partner</a>';
 
                 $('.raceshape-btn').first().after(exportButtonHtml).each(function () {
 
-                    $('#stravistix_exportVpu').click(function (evt) {
+                    $('#stravissimo_exportVpu').click(function (evt) {
                         evt.preventDefault();
                         evt.stopPropagation();
                         that.displayRaceShapePopup();

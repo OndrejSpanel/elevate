@@ -1,6 +1,6 @@
 class ActivityProcessor {
 
-    public static cachePrefix: string = 'stravistix_activity_';
+    public static cachePrefix: string = 'stravissimo_activity_';
     protected appResources: IAppResources;
     protected vacuumProcessor: VacuumProcessor;
     protected userHrrZones: any;
