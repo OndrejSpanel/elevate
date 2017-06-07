@@ -1,8 +1,8 @@
 {
     "manifest_version": 2,
-    "name": "StravistiX for Strava",
-    "short_name": "StravistiX",
-    "description": "Enhance your Strava experience with StravistiX. An opensource web plugin which analyse deeper your activities and segments efforts !",
+    "name": "Stravissimo for Strava",
+    "short_name": "Stravissimo",
+    "description": "Stravissimo - fork of StravistiX, an opensource web plugin which analyse deeper your activities and segments efforts !",
     "version": "5.7.2",
     "version_name": "5.7.2 Stable",
     "background": {

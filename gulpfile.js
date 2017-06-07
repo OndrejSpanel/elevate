@@ -206,7 +206,7 @@ gulp.task('makeArchive', ['build'], function () {
         version = 'v' + JSON.parse(fs.readFileSync(DIST_FOLDER + '/manifest.json')).version
     }
 
-    PACKAGE_NAME = 'stravistix_' + version + '_' + (new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '.')) + '.zip';
+    PACKAGE_NAME = 'stravissimo_' + version + '_' + (new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '.')) + '.zip';
 
     util.log('Now creating package archive: ' + PACKAGE_NAME);
 

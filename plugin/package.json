@@ -1,5 +1,5 @@
 {
-  "name": "stravistix",
+  "name": "stravissimo",
   "description": "Chrome Opera extension adding features for Strava website with new performances data and improved ergonomics. Made with AngularJs, UnderscoreJs and Bootstrap",
   "keywords": [
     "strava",
@@ -9,15 +9,15 @@
   ],
   "maintainers": [
     {
-      "name": "Thomas Champagne",
-      "email": "th.champagne@gmail.com",
-      "web": "http://thomaschampagne.github.io"
+      "name": "Stravissimo Developer",
+      "email": "stravissimo@gmail.com",
+      "web": "https://github.com/OndrejSpanel/stravistix"
     }
   ],
   "repository": [
     {
       "type": "git",
-      "url": "https://github.com/thomaschampagne/stravistix"
+      "url": "https://github.com/OndrejSpanel/stravistix"
     }
   ],
   "version": "1.0.0",
