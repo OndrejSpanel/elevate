@@ -357,8 +357,6 @@ export class FitnessDataService {
         let tsb: number = 0;
         let runPerformance : number = undefined;
         let ridePerformance : number = undefined;
-        let runPerformance : number = undefined;
-        let ridePerformance : number = undefined;
         const results: IFitnessActivity[] = [];
 
         _.forEach(fitnessObjectsWithDaysOff, (trimpObject: IActivitiesWithFitnessDaysOff, index: number, list: IActivitiesWithFitnessDaysOff[]) => {

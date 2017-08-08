@@ -297,7 +297,7 @@ export class ActivityComputer {
         return currentValue * delta - ((currentValue - previousValue) * delta) / 2;
     }
 
-    protected moveData(velocityArray: number[], timeArray: number[], gradeArray: number[], gradeArray: number[]): IMoveData {
+    protected moveData(velocityArray: number[], timeArray: number[], gradeArray: number[]): IMoveData {
 
         if (_.isEmpty(velocityArray) || _.isEmpty(timeArray)) {
             return null;
@@ -305,8 +305,6 @@ export class ActivityComputer {
 
         let genuineAvgSpeedSum: number = 0,
             genuineAvgSpeedSumCount: number = 0;
-        let genuineAvgGASpeedSum: number = 0,
-            genuineAvgGASpeedSumCount: number = 0;
         let genuineAvgGASpeedSum: number = 0,
             genuineAvgGASpeedSumCount: number = 0;
         const speedsNonZero: number[] = [];
