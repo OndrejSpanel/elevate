@@ -1,25 +1,25 @@
 import * as _ from "lodash";
-import {IActivityStream} from "../../plugin/common/scripts/interfaces/IActivityData";
-import {CourseMaker, ExportTypes, ICourseBounds} from "../../plugin/common/scripts/CourseMarker";
+import { StreamsModel } from "../../plugin/common/scripts/models/ActivityData";
+import { CourseMaker, ExportTypes, ICourseBounds } from "../../plugin/common/scripts/CourseMarker";
 
 describe("CourseMaker", () => {
 
-    let courseMaker: CourseMaker = new CourseMaker();
-    let xmlParser: DOMParser = new DOMParser();
-    let activityStream: IActivityStream;
+	const courseMaker: CourseMaker = new CourseMaker();
+	const xmlParser: DOMParser = new DOMParser();
+	let activityStream: StreamsModel;
 
     beforeEach(() => {
         activityStream = _.cloneDeep(window.__fixtures__["fixtures/activities/829770999/stream"]);
     });
 
-    it("should export GPX stream with consistency data", () => {
+	it("should export GPX stream with consistency data", (done: Function) => {
 
         // Given
-        let courseName: string = "MyCourse";
+		const courseName = "MyCourse";
 
         // When
-        let gpxStream: string = courseMaker.create(ExportTypes.GPX, courseName, activityStream);
-        let xmlStream = xmlParser.parseFromString(gpxStream, "text/xml");
+		const gpxStream: string = courseMaker.create(ExportTypes.GPX, courseName, activityStream);
+		const xmlStream = xmlParser.parseFromString(gpxStream, "text/xml");
 
         // Then ...
         expect(xmlStream).not.toBeNull();
@@ -59,13 +59,14 @@ describe("CourseMaker", () => {
         const trackPointExtension = extensions.getElementsByTagNameNS(trackPointNamespaceURI, "TrackPointExtension")[0];
         expect(trackPointExtension.getElementsByTagNameNS(trackPointNamespaceURI, "hr")[0].childNodes[0].nodeValue).toMatch(/^104/);
         expect(trackPointExtension.getElementsByTagNameNS(trackPointNamespaceURI, "cad")[0].childNodes[0].nodeValue).toMatch(/^69/);
+		done();
     });
 
-    it("should export GPX with no HRM, Cadence, altimeter & Power sensor", () => {
+	it("should export GPX with no HRM, Cadence, altimeter & Power sensor", (done: Function) => {
 
         // Given
-        let courseName: string = "MyCourse";
-        activityStream = <IActivityStream> _.omit(activityStream, ["heartrate", "cadence", "watts", "watts_calc", "altitude"]);
+		const courseName = "MyCourse";
+		activityStream = <StreamsModel> _.omit(activityStream, ["heartrate", "cadence", "watts", "watts_calc", "altitude"]);
         let errorCatched = null;
 
         // When
@@ -78,16 +79,18 @@ describe("CourseMaker", () => {
         // Then ...
         expect(errorCatched).toBeNull();
 
+		done();
+
     });
 
-    it("should export TCX stream with consistency data", () => {
+	it("should export TCX stream with consistency data", (done: Function) => {
 
         // Given
-        let courseName: string = "MyCourse";
+		const courseName = "MyCourse";
 
         // When
-        let tcxStream: string = courseMaker.create(ExportTypes.TCX, courseName, activityStream);
-        let xmlStream = xmlParser.parseFromString(tcxStream, "text/xml");
+		const tcxStream: string = courseMaker.create(ExportTypes.TCX, courseName, activityStream);
+		const xmlStream = xmlParser.parseFromString(tcxStream, "text/xml");
 
         // Then
         expect(xmlStream).not.toBeNull();
@@ -127,13 +130,14 @@ describe("CourseMaker", () => {
         expect(firstTrackPoint.getElementsByTagName("HeartRateBpm")[0]
             .getElementsByTagName("Value")[0].childNodes[0].nodeValue).toMatch(/^104$/);
 
+		done();
     });
 
-    it("should export TCX with no HRM, Cadence, altimeter & Power sensor", () => {
+	it("should export TCX with no HRM, Cadence, altimeter & Power sensor", (done: Function) => {
 
         // Given
-        let courseName: string = "MyCourse";
-        activityStream = <IActivityStream> _.omit(activityStream, ["heartrate", "cadence", "watts", "watts_calc", "altitude"]);
+		const courseName = "MyCourse";
+		activityStream = <StreamsModel> _.omit(activityStream, ["heartrate", "cadence", "watts", "watts_calc", "altitude"]);
         let errorCatched = null;
 
         // When
@@ -145,34 +149,34 @@ describe("CourseMaker", () => {
 
         // Then ...
         expect(errorCatched).toBeNull();
-
+		done();
     });
 
-    it("should export GPX with bounds", () => {
+	it("should export GPX with bounds", (done: Function) => {
 
         // Given
-        let courseName: string = "MyCourse";
+		const courseName = "MyCourse";
         const bounds: ICourseBounds = {start: 200, end: 300};
 
         // When
-        let gpxStream: string = courseMaker.create(ExportTypes.GPX, courseName, activityStream, bounds);
-        let xmlStream = xmlParser.parseFromString(gpxStream, "text/xml");
+		const gpxStream: string = courseMaker.create(ExportTypes.GPX, courseName, activityStream, bounds);
+		const xmlStream = xmlParser.parseFromString(gpxStream, "text/xml");
 
         // Then
         const trackPointsLength = xmlStream.getElementsByTagName("trkpt").length;
         expect(trackPointsLength).toBe(100);
-
+		done();
     });
 
-    it("should export TCX with bounds", () => {
+	it("should export TCX with bounds", (done: Function) => {
 
         // Given
-        let courseName: string = "MyCourse";
+		const courseName = "MyCourse";
         const bounds: ICourseBounds = {start: 300, end: 400};
 
         // When
-        let tcxStream: string = courseMaker.create(ExportTypes.TCX, courseName, activityStream, bounds);
-        let xmlStream = xmlParser.parseFromString(tcxStream, "text/xml");
+		const tcxStream: string = courseMaker.create(ExportTypes.TCX, courseName, activityStream, bounds);
+		const xmlStream = xmlParser.parseFromString(tcxStream, "text/xml");
 
         // Then
         const trackPointsLength = xmlStream.getElementsByTagName("TrainingCenterDatabase")[0]
@@ -182,17 +186,18 @@ describe("CourseMaker", () => {
             .getElementsByTagName("Trackpoint").length;
 
         expect(trackPointsLength).toBe(100);
-
+		done();
     });
 
-    it("should failed", () => {
+	it("should failed", (done: Function) => {
 
         // Given
-        let courseName: string = "MyCourse";
+		const courseName = "MyCourse";
 
         expect(() => {
             courseMaker.create(-1, courseName, activityStream); // When
         }).toThrowError("Export type do not exist"); // Then
 
+		done();
     });
 });

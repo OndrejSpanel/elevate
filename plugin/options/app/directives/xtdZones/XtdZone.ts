@@ -1,6 +1,5 @@
-
-import {IZone} from "../../../../common/scripts/interfaces/IActivityData";
-import {IAvoidInputKeysService} from "../../services/AvoidInputKeysService";
+import { ZoneModel } from "../../../../common/scripts/models/ActivityData";
+import { IAvoidInputKeysService } from "../../services/AvoidInputKeysService";
 
 export class XtdZone {
 
@@ -14,7 +13,7 @@ export class XtdZone {
             AvoidInputKeysService.apply(evt);
         };
 
-        $scope.$watch("xtdZone", (newZone: IZone, oldZone: IZone) => {
+		$scope.$watch("xtdZone", (newZone: ZoneModel, oldZone: ZoneModel) => {
             // Notify parent scope when a zone has changed
             $scope.$parent.onZoneChange(parseInt($scope.zoneId), oldZone, newZone);
         }, true);

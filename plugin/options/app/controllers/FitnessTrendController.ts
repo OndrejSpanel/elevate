@@ -1,9 +1,8 @@
-import {IControllerConstructor, Injectable} from "angular";
 import * as _ from "lodash";
-import {ChromeStorageService} from "../services/ChromeStorageService";
-import {FitnessDataService, IFitnessActivity} from "../services/FitnessDataService";
+import { ChromeStorageService } from "../services/ChromeStorageService";
+import { FitnessDataService, IFitnessActivity } from "../services/FitnessDataService";
 
-import {IUserSettings} from "../../../common/scripts/interfaces/IUserSettings";
+import { UserSettingsModel } from "../../../common/scripts/models/UserSettings";
 
 export class FitnessTrendController {
 
@@ -24,7 +23,7 @@ export class FitnessTrendController {
             let useSwimStressScore: boolean = false;
 
             // Load user FTP and fitness data
-            chromeStorageService.fetchUserSettings().then((userSettings: IUserSettings) => {
+			chromeStorageService.fetchUserSettings().then((userSettings: UserSettingsModel) => {
 
                 userFTP = userSettings.userFTP;
                 userSwimFTP = userSettings.userSwimFTP;

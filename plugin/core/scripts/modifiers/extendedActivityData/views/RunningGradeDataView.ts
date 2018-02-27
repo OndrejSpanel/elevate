@@ -1,10 +1,10 @@
-import {Helper} from "../../../../../common/scripts/Helper";
-import {IGradeData} from "../../../../../common/scripts/interfaces/IActivityData";
-import {AbstractGradeDataView} from "./AbstractGradeDataView";
+import { Helper } from "../../../../../common/scripts/Helper";
+import { GradeDataModel } from "../../../../../common/scripts/models/ActivityData";
+import { AbstractGradeDataView } from "./AbstractGradeDataView";
 
 export class RunningGradeDataView extends AbstractGradeDataView {
 
-    constructor(gradeData: IGradeData, units: string) {
+	constructor(gradeData: GradeDataModel, units: string) {
         super(gradeData, units);
     }
 

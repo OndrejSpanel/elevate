@@ -2,15 +2,16 @@ import * as angular from "angular";
 import * as d3 from "d3";
 import * as _ from "lodash";
 import * as moment from "moment";
-import {Moment} from "moment";
-import {ChromeStorageService} from "../services/ChromeStorageService";
+import { Moment } from "moment";
+import { ChromeStorageService } from "../services/ChromeStorageService";
 
-import {ISyncActivityComputed} from "../../../common/scripts/interfaces/ISync";
+import { SyncedActivityModel } from "../../../common/scripts/models/Sync";
 
 export interface IYearProgress {
     year: number;
     progressions: IProgression[];
 }
+
 export interface IProgression {
     onTimestamp: number;
     onYear: number;
@@ -21,7 +22,7 @@ export interface IProgression {
     count: number;
 }
 
-export interface YearProgressActivity extends ISyncActivityComputed {
+export interface YearProgressActivity extends SyncedActivityModel {
     year: number;
     dayOfYear: number;
 }
@@ -103,7 +104,7 @@ export class YearProgressComputer {
             }
 
             // Find matching activities
-            const foundOnToday: ISyncActivityComputed[] = _.filter(yearProgressActivities, {
+			const foundOnToday: SyncedActivityModel[] = _.filter(yearProgressActivities, {
                 year: currentDayMoment.year(),
                 dayOfYear: currentDayMoment.dayOfYear(),
             });
@@ -124,6 +125,7 @@ export class YearProgressComputer {
         return result;
     }
 }
+
 enum DataType {
     DISTANCE,
     TIME,
@@ -155,7 +157,9 @@ export class YearProgressController {
             {value: DataType.COUNT, text: "Count"},
         ];
 
-        $scope.dataTypeSelected = (localStorage.getItem("yearProgressDataType") && _.isNumber(parseInt(localStorage.getItem("yearProgressDataType")))) ? _.find($scope.dataType, {value: parseInt(localStorage.getItem("yearProgressDataType"))}) : $scope.dataType[0];
+        $scope.dataTypeSelected = (localStorage.getItem("yearProgressDataType") && _.isNumber(parseInt(localStorage.getItem("yearProgressDataType"))))
+            ? _.find($scope.dataType, <any> {value: parseInt(localStorage.getItem("yearProgressDataType"))})
+            : $scope.dataType[0];
         $scope.dataTypeChanged = () => {
             localStorage.setItem("yearProgressDataType", $scope.dataTypeSelected.value); // Store value
             $scope.applyData($scope.computedActivities, $scope.searchTypesSelected, $scope.dataTypeSelected.value);
@@ -175,7 +179,7 @@ export class YearProgressController {
         };
 
         // Start...
-        chromeStorageService.fetchComputedActivities().then((computedActivities: ISyncActivityComputed[]) => {
+		chromeStorageService.fetchComputedActivities().then((computedActivities: SyncedActivityModel[]) => {
 
             $scope.computedActivities = computedActivities;
 
@@ -189,7 +193,7 @@ export class YearProgressController {
             $scope.searchTypesSelected = (localStorage.getItem("yearProgressActivitiesType")) ? angular.fromJson(localStorage.getItem("yearProgressActivitiesType")) : (mostPerformedType) ? [mostPerformedType] : null;
 
             // Which text displayed in activities types?
-            $scope.getSearchTypesSelectedText = function() {
+            $scope.getSearchTypesSelectedText = function () {
                 if ($scope.searchTypesSelected.length) {
                     return $scope.searchTypesSelected.length + " selected";
                 } else {
@@ -206,7 +210,7 @@ export class YearProgressController {
             $scope.applyData($scope.computedActivities, $scope.searchTypesSelected, $scope.dataTypeSelected.value);
         });
 
-        $scope.applyData = function(computedActivities: ISyncActivityComputed[], types: string[], dataType: DataType) {
+		$scope.applyData = function (computedActivities: SyncedActivityModel[], types: string[], dataType: DataType) {
 
             const yearProgressions = yearProgressComputer.compute(computedActivities as YearProgressActivity[], types);
 
@@ -216,7 +220,7 @@ export class YearProgressController {
 
             _.forEach(yearProgressions, (yearProgress: IYearProgress, index: number, yearProgressionsIterator: IYearProgress[]) => {
 
-                const yearValues: Array<{x: number, y: number}> = [];
+                const yearValues: Array<{ x: number, y: number }> = [];
 
                 _.forEach(yearProgress.progressions, (progression: IProgression) => {
 

@@ -8,7 +8,7 @@ import { routeMap } from "../../Config";
 import { FitnessTrendController } from "../../controllers/FitnessTrendController";
 import { IFitnessActivity } from "../../services/FitnessDataService";
 import {Helper} from "../../../../common/scripts/Helper";
-import {ISpeedUnitData} from "../../../../common/scripts/interfaces/IActivityData";
+import {SpeedUnitDataModel} from "../../../../common/scripts/models/ActivityData";
 
 export interface IFitnessTrendGraphScope extends IScope {
     nvd3api: any;
@@ -20,7 +20,7 @@ export interface IFitnessTrendGraphScope extends IScope {
     showPerformance: boolean;
     showPerformanceChanged: Function;
     trainingZoneOnToday: ITrainingZone;
-    speedUnitData: ISpeedUnitData;
+    speedUnitData: SpeedUnitDataModel;
     getTrainingZone: (tsb: number) => ITrainingZone;
     usePowerMeter: boolean;
     usePowerMeterChanged: () => void;
@@ -50,6 +50,7 @@ export interface IFitnessTrendGraphScope extends IScope {
     fitnessChartOptions: any;
     fitnessChartData: IFitnessGraphData;
     showHelp: () => void;
+
     loadFitnessData(): void;
 }
 
@@ -255,10 +256,10 @@ export class FitnessTrendGraph {
         };
 
         $scope.drawLegendSquare = (color: string, width: number, text: string) => {
-            return '<span style="width: ' + width + "px; height: " + width + "px; border: 1px solid grey; background-color: " + color + '; vertical-align: middle;"></span> <span style="vertical-align: middle;">' + text + "</span>";
+            return "<span style=\"width: " + width + "px; height: " + width + "px; border: 1px solid grey; background-color: " + color + "; vertical-align: middle;\"></span> <span style=\"vertical-align: middle;\">" + text + "</span>";
         };
         $scope.drawHtmlSeparator = () => {
-            return '<div style="width: 100%; border-bottom: 1px solid ' + $colors.lightGrey + '; padding-bottom: 3px; padding-top: 3px;"></div>';
+            return "<div style=\"width: 100%; border-bottom: 1px solid " + $colors.lightGrey + "; padding-bottom: 3px; padding-top: 3px;\"></div>";
         };
 
         //$scope.speedUnitData = Helper.getSpeedUnitData();
@@ -308,66 +309,66 @@ export class FitnessTrendGraph {
 
             let html: string = "";
 
-            html += '<table class="trendGraphTooltipTable" style="color: ' + $colors.midGrey + ';">';
+            html += "<table class=\"trendGraphTooltipTable\" style=\"color: " + $colors.midGrey + ";\">";
 
             // Title
             html += "   <tr>";
-            html += '       <td colspan="3" class="dayType underlined" style="color: ' + (hasActivities ? $colors.strava : $colors.midGrey) + ';">' + ((fitnessObject.previewDay) ? "PREVIEW" : (hasActivities ? "ACTIVE" : "REST")) + "</td>";
+            html += "       <td colspan=\"3\" class=\"dayType underlined\" style=\"color: " + (hasActivities ? $colors.strava : $colors.midGrey) + ";\">" + ((fitnessObject.previewDay) ? "PREVIEW" : (hasActivities ? "ACTIVE" : "REST")) + "</td>";
             html += "   </tr>";
 
             // Names
             if (hasActivities) {
                 html += "   <tr>";
-                html += '       <td class="title" style="vertical-align: top;">Name</td>';
-                html += '       <td colspan="2" style="white-space:pre-wrap ; word-wrap:break-word;">' + fitnessObject.activitiesName + "</td>";
+                html += "       <td class=\"title\" style=\"vertical-align: top;\">Name</td>";
+                html += "       <td colspan=\"2\" style=\"white-space:pre-wrap ; word-wrap:break-word;\">" + fitnessObject.activitiesName + "</td>";
                 html += "   </tr>";
             }
 
             // Type
             if (hasActivities) {
                 html += "   <tr>";
-                html += '       <td class="title">Type</td>';
-                html += '       <td colspan="2">' + fitnessObject.type + "</td>";
+                html += "       <td class=\"title\">Type</td>";
+                html += "       <td colspan=\"2\">" + fitnessObject.type + "</td>";
                 html += "   </tr>";
             }
 
             // Date
             html += "   <tr>";
-            html += '       <td class="title underlined">Date</td>';
-            html += '       <td class="underlined" colspan="2">' + moment(d.point.x).format("MMMM Do YYYY") + "</td>";
+            html += "       <td class=\"title underlined\">Date</td>";
+			html += "       <td class=\"underlined\" colspan=\"2\">" + moment(d.point.x).format("dd MMM Do YYYY") + "</td>";
             html += "   </tr>";
 
             if (hasActivities) {
 
                 html += "   <tr>";
-                html += '       <td class="title"></td>';
-                html += '       <td class="" colspan="2"></td>';
+                html += "       <td class=\"title\"></td>";
+                html += "       <td class=\"\" colspan=\"2\"></td>";
                 html += "   </tr>";
 
                 if (fitnessObject.trimpScore > 0) {
                     html += "   <tr>";
-                    html += '       <td class="title">TRIMP</td>';
+                    html += "       <td class=\"title\">TRIMP</td>";
                     html += "       <td>" + fitnessObject.trimpScore.toFixed(0) + "</td>";
                     html += "   </tr>";
                 }
 
                 if (fitnessObject.powerStressScore > 0) {
                     html += "   <tr>";
-                    html += '       <td class="title">PSS</td>';
+                    html += "       <td class=\"title\">PSS</td>";
                     html += "       <td>" + fitnessObject.powerStressScore.toFixed(0) + "</td>";
                     html += "   </tr>";
                 }
 
                 if (fitnessObject.swimStressScore > 0) {
                     html += "   <tr>";
-                    html += '       <td class="title">Swim Score</td>';
+                    html += "       <td class=\"title\">Swim Score</td>";
                     html += "       <td>" + fitnessObject.swimStressScore.toFixed(0) + "</td>";
                     html += "   </tr>";
                 }
 
                 if (fitnessObject.finalStressScore > 0) {
                     html += "   <tr>";
-                    html += '       <td class="title">Final Stress</td>';
+                    html += "       <td class=\"title\">Final Stress</td>";
                     html += "       <td>" + fitnessObject.finalStressScore.toFixed(0) + "</td>";
                     html += "   </tr>";
                 }
@@ -411,23 +412,23 @@ export class FitnessTrendGraph {
                 }
 
                 html += '   <tr>';
-                html += '       <td class="title underlined"></td>';
-                html += '       <td class="underlined" colspan="2"></td>';
+                html += "       <td class=\"title underlined\"></td>";
+                html += "       <td class=\"underlined\" colspan=\"2\"></td>";
                 html += "   </tr>";
             }
 
             // Type
             html += "   <tr>";
-            html += '       <td class="title" colspan="2">' + $scope.drawLegendSquare($colors.ctl, 10, "FITNESS") + "</td>";
+            html += "       <td class=\"title\" colspan=\"2\">" + $scope.drawLegendSquare($colors.ctl, 10, "FITNESS") + "</td>";
             html += "       <td>" + fitnessObject.ctl.toFixed(1) + "</td>";
             html += "   </tr>";
             html += "   <tr>";
-            html += '       <td class="title" colspan="2">' + $scope.drawLegendSquare($colors.atl, 10, "FATIGUE") + "</td>";
+            html += "       <td class=\"title\" colspan=\"2\">" + $scope.drawLegendSquare($colors.atl, 10, "FATIGUE") + "</td>";
             html += "       <td>" + fitnessObject.atl.toFixed(1) + "</td>";
             html += "   </tr>";
             html += "   <tr>";
-            html += '       <td class="title" colspan="2">' + $scope.drawLegendSquare($colors.tsb, 10, "FORM") + "</td>";
-            html += '       <td class="">' + fitnessObject.tsb.toFixed(1) + ' @ <span style="color: ' + trainingZone.color + ';">' + trainingZone.name.toUpperCase() + "</span>" + "</td>";
+            html += "       <td class=\"title\" colspan=\"2\">" + $scope.drawLegendSquare($colors.tsb, 10, "FORM") + "</td>";
+            html += "       <td class=\"\">" + fitnessObject.tsb.toFixed(1) + " @ <span style=\"color: " + trainingZone.color + ";\">" + trainingZone.name.toUpperCase() + "</span>" + "</td>";
             html += "   </tr>";
 
             // html += '   <tr>';
@@ -438,10 +439,10 @@ export class FitnessTrendGraph {
             // Hint
             if (hasActivities) {
                 html += "   <tr>";
-                html += '       <td class="underlined" colspan="3"></td>';
+                html += "       <td class=\"underlined\" colspan=\"3\"></td>";
                 html += "   </tr>";
                 html += "   <tr>";
-                html += '       <td colspan="3" class="hint"><i>Hint: Click to open activities</i></td>';
+                html += "       <td colspan=\"3\" class=\"hint\"><i>Hint: Click to open activities</i></td>";
                 html += "   </tr>";
             }
 

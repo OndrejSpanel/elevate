@@ -1,10 +1,10 @@
-import {IPromise, IQService} from "angular";
+import { IPromise, IQService } from "angular";
 import * as _ from "lodash";
 import * as moment from "moment";
-import {Moment} from "moment";
-import {ChromeStorageService} from "./ChromeStorageService";
+import { Moment } from "moment";
+import { ChromeStorageService } from "./ChromeStorageService";
 
-import {ISyncActivityComputed} from "../../../common/scripts/interfaces/ISync";
+import { SyncedActivityModel } from "../../../common/scripts/models/Sync";
 
 export interface IActivitiesWithFitness {
     id: number;
@@ -103,11 +103,11 @@ export class FitnessDataService {
 
         const deferred = this.$q.defer<IActivitiesWithFitness[]>();
 
-        this.chromeStorageService.fetchComputedActivities().then((computedActivities: ISyncActivityComputed[]) => {
+		this.chromeStorageService.fetchComputedActivities().then((computedActivities: SyncedActivityModel[]) => {
 
             const cleanedActivities: IActivitiesWithFitness[] = [];
 
-            _.forEach(computedActivities, (activity: ISyncActivityComputed) => {
+			_.forEach(computedActivities, (activity: SyncedActivityModel) => {
 
                 const hasHeartRateData: boolean = (activity.extendedStats && !_.isEmpty(activity.extendedStats.heartRateData) && _.isNumber(activity.extendedStats.heartRateData.TRIMP));
                 let hasRunningData: boolean = (activity.type === "Run" && activity.extendedStats && !_.isEmpty(activity.extendedStats.heartRateData) && !_.isEmpty(activity.extendedStats.paceData));
@@ -187,7 +187,7 @@ export class FitnessDataService {
     /**
      * @return Fitness object of computed activities including days off (= rest day)
      */
-    protected  getFitnessObjectsWithDaysOff(): IPromise<IActivitiesWithFitnessDaysOff[]> {
+    protected getFitnessObjectsWithDaysOff(): IPromise<IActivitiesWithFitnessDaysOff[]> {
 
         const deferred = this.$q.defer<IActivitiesWithFitnessDaysOff[]>();
 
@@ -238,6 +238,10 @@ export class FitnessDataService {
                     for (let count: number = 0; count < activitiesWithFitnessThatDay.length; count++) {
 
                         const fitnessActivity: IActivitiesWithFitness = activitiesWithFitnessThatDay[count];
+
+                        if (fitnessActivity.type === "EBikeRide") {
+                            continue;
+                        }
 
                         fitnessObjectOnCurrentDay.ids.push(fitnessActivity.id);
                         fitnessObjectOnCurrentDay.activitiesName.push(fitnessActivity.activityName);

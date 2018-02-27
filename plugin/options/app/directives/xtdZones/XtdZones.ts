@@ -1,10 +1,10 @@
 import * as angular from "angular";
-import {IAnchorScrollService, ILocationService} from "angular";
+import { IAnchorScrollService, ILocationService } from "angular";
 import * as _ from "lodash";
-import {IZone} from "../../../../common/scripts/interfaces/IActivityData";
-import {IUserSettings} from "../../../../common/scripts/interfaces/IUserSettings";
-import {userSettings} from "../../../../common/scripts/UserSettings";
-import {ChromeStorageService} from "../../services/ChromeStorageService";
+import { ZoneModel } from "../../../../common/scripts/models/ActivityData";
+import { UserSettingsModel } from "../../../../common/scripts/models/UserSettings";
+import { userSettings } from "../../../../common/scripts/UserSettings";
+import { ChromeStorageService } from "../../services/ChromeStorageService";
 
 export class XtdZones {
 
@@ -30,13 +30,13 @@ export class XtdZones {
 
             } else {
 
-                const oldLastZone: IZone = $scope.xtdZones[$scope.xtdZones.length - 1];
+				const oldLastZone: ZoneModel = $scope.xtdZones[$scope.xtdZones.length - 1];
 
                 // Computed middle value between oldLastZone.from and oldLastZone.to
                 const betweenValue: number = parseInt(((oldLastZone.from + oldLastZone.to) / 2).toFixed(0));
 
                 // Creating new Zone
-                const newLastZone: IZone = {
+				const newLastZone: ZoneModel = {
                     from: betweenValue,
                     to: oldLastZone.to,
                 };
@@ -121,7 +121,7 @@ export class XtdZones {
 
             if (!_.isUndefined($scope.xtdZones)) {
 
-                chromeStorageService.fetchUserSettings((userSettingsSynced: IUserSettings) => {
+				chromeStorageService.fetchUserSettings((userSettingsSynced: UserSettingsModel) => {
                     // Update zones with new one
                     const zones: any = userSettingsSynced.zones;
                     zones[$scope.xtdDataSelected.value] = angular.fromJson(angular.toJson($scope.xtdZones));
@@ -132,7 +132,7 @@ export class XtdZones {
                             $mdDialog.alert()
                                 .clickOutsideToClose(true)
                                 .title("Saved !")
-                                .textContent("Your " + $scope.xtdZones.length + ' "' + $scope.xtdDataSelected.name + ' zones" have been saved.')
+                                .textContent("Your " + $scope.xtdZones.length + " \"" + $scope.xtdDataSelected.name + " zones\" have been saved.")
                                 .ok("Got it!")
                                 .targetEvent($event),
                         );
@@ -198,7 +198,7 @@ export class XtdZones {
                 .textContent("Paste exported zones in input field.")
                 .ariaLabel("Paste exported zones in input field.")
                 .initialValue("")
-                .placeholder('Enter here something like [{ "from": a, "to": b }, { "from": b, "to": c }, { "from": c, "to": d }]')
+                .placeholder("Enter here something like [{ \"from\": a, \"to\": b }, { \"from\": b, \"to\": c }, { \"from\": c, \"to\": d }]")
                 .targetEvent($event)
                 .ok("Import");
 
@@ -208,7 +208,7 @@ export class XtdZones {
                     if (importData) {
 
                         try {
-                            const jsonImportData: IZone[] = angular.fromJson(importData);
+							const jsonImportData: ZoneModel[] = angular.fromJson(importData);
 
                             if ($scope.areZonesCompliant(jsonImportData)) {
 
@@ -235,7 +235,7 @@ export class XtdZones {
                 });
         };
 
-        $scope.areZonesCompliant = (zones: IZone[]) => {
+		$scope.areZonesCompliant = (zones: ZoneModel[]) => {
 
             if (!zones) {
                 return false;
@@ -271,7 +271,7 @@ export class XtdZones {
             return true;
         };
 
-        $scope.onZoneChange = (zoneId: number, previousZone: IZone, newZone: IZone) => {
+		$scope.onZoneChange = (zoneId: number, previousZone: ZoneModel, newZone: ZoneModel) => {
 
             const fieldHasChanged: string = $scope.whichFieldHasChanged(previousZone, newZone);
 
@@ -303,7 +303,7 @@ export class XtdZones {
         /**
          * @return 'from' or 'to'
          */
-        $scope.whichFieldHasChanged = (previousZone: IZone, newZone: IZone) => {
+		$scope.whichFieldHasChanged = (previousZone: ZoneModel, newZone: ZoneModel) => {
 
             if (previousZone.from !== newZone.from) {
                 return "from";

@@ -1,18 +1,18 @@
-import {Helper} from "../../../../common/scripts/Helper";
-import {IUserSettings} from "../../../../common/scripts/interfaces/IUserSettings";
-import {IAppResources} from "../../interfaces/IAppResources";
-import {ActivityProcessor} from "../../processors/ActivityProcessor";
-import {AbstractExtendedDataModifier} from "./AbstractExtendedDataModifier";
-import {ElevationDataView} from "./views/ElevationDataView";
-import {PaceDataView} from "./views/PaceDataView";
-import {RunningCadenceDataView} from "./views/RunningCadenceDataView";
-import {RunningGradeDataView} from "./views/RunningGradeDataView";
-import {RunningPowerDataView} from "./views/RunningPowerDataView";
+import { Helper } from "../../../../common/scripts/Helper";
+import { UserSettingsModel } from "../../../../common/scripts/models/UserSettings";
+import { IAppResources } from "../../interfaces/IAppResources";
+import { ActivityProcessor } from "../../processors/ActivityProcessor";
+import { AbstractExtendedDataModifier } from "./AbstractExtendedDataModifier";
+import { ElevationDataView } from "./views/ElevationDataView";
+import { PaceDataView } from "./views/PaceDataView";
+import { RunningCadenceDataView } from "./views/RunningCadenceDataView";
+import { RunningGradeDataView } from "./views/RunningGradeDataView";
+import { RunningPowerDataView } from "./views/RunningPowerDataView";
 
 export class RunningExtendedDataModifier extends AbstractExtendedDataModifier {
 
     constructor(activityProcessor: ActivityProcessor, activityId: number, activityType: string, appResources: IAppResources,
-                userSettings: IUserSettings, isAuthorOfViewedActivity: boolean, basicInfos: any, type: number) {
+				userSettings: UserSettingsModel, isAuthorOfViewedActivity: boolean, basicInfos: any, type: number) {
         super(activityProcessor, activityId, activityType, appResources, userSettings, isAuthorOfViewedActivity, basicInfos, type);
     }
 
@@ -62,8 +62,7 @@ export class RunningExtendedDataModifier extends AbstractExtendedDataModifier {
                 } else {
 
                     // Estimated running power data..
-                    if (this.userSettings.showHiddenBetaFeatures // Is beta estimated running power activated?
-                        && this.userSettings.displayRunningPowerEstimation) {
+                    if (this.userSettings.displayRunningPowerEstimation) {
                         averageWattsTitle = "Estimated " + averageWattsTitle;
                         userSettingKey = "displayRunningPowerEstimation";
                         averageWatts = "<span style='font-size: 14px;'>~</span>" + this.analysisData.powerData.avgWatts.toFixed(0);
@@ -129,10 +128,8 @@ export class RunningExtendedDataModifier extends AbstractExtendedDataModifier {
         // Power data
         if (this.analysisData.powerData && this.userSettings.displayAdvancedPowerData) { // Is feature enable?
 
-
             // Is beta estimated running power activated?
-            const isEstimatedRunningPowerFeatureEnabled = this.userSettings.showHiddenBetaFeatures
-                && this.userSettings.displayRunningPowerEstimation;
+            const isEstimatedRunningPowerFeatureEnabled = this.userSettings.displayRunningPowerEstimation;
 
             if (this.analysisData.powerData.hasPowerMeter || isEstimatedRunningPowerFeatureEnabled) {
 
